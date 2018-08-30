@@ -11,23 +11,15 @@ $(document).ready(function() {
   // var monthIndex = new Date().getMonth(); // returns 0-11
   // var dayMonthToday = new Date().getDate(); // returns 0-31
 
-
-
-
-
-
-
   // var monthsArray = ["Jan","Feb","Mar","April","May","June","July","Aug","Sept","Oct","Nov","Dec"];
 
 
   // given the month (0-11) and year (2017) repaint the calendar
   var renderDay = function(date) {
     var d = new Date(date)
-    $(".title").html(d);
+    $(".month").html(d);
 
   }
-
-
 
   // Now set the listeners for the SHIFT back and forward
   $(".shiftback").click(function() {
@@ -44,9 +36,6 @@ $(document).ready(function() {
           monthIndex = 11;
           year = year - 1;
         }
-
-
-     
       } 
     })
   }) // shiftback
