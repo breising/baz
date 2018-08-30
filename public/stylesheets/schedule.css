@@ -1,0 +1,104 @@
+
+
+
+
+.calcontain {
+  margin-top: 0px;
+  margin-left: 1vw;
+  width: 98vw;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.shiftcontain {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  height: 35px;
+  width: 90vw;
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.shiftback {
+  font-size: 2em;
+  font-weight: 200;
+  position: absolute;
+  left: 20vw;
+  color: hsl(1, 0%, 60%);
+}
+
+.shiftback:hover {
+  color: hsl(1, 50%, 60%);
+  cursor: pointer;
+}
+.shiftforward:hover {
+  color: hsl(1, 50%, 60%);
+  cursor: pointer;
+}
+
+.month {
+  color: hsl(1, 0%, 40%);
+  font-size: 1.5em;
+  font-weight: 200;
+  position: absolute;
+  left: 33vw;
+  top: 5px;
+}
+
+.year {
+  color: hsl(1, 0%, 40%);
+  font-size: 1.5em;
+  font-weight: 200;
+  position: absolute;
+  left: 51vw;
+  top: 5px;
+}
+
+.shiftforward {
+  font-size: 2em;
+  position: absolute;
+  left: 73vw;
+  color: hsl(1, 0%, 60%);
+  font-weight: 200;
+}
+
+.calbox {
+  font-size: 11px;
+  font-weight: 100;
+  color: hsl(1, 0%, 40%);
+  min-width: 13.7vw;
+  min-height: 10vh;
+  border-width: 1px;
+  border-left: solid;
+  border-top: solid;
+  border-width: 1px;
+  border-color: hsl(1, 0%, 93%);
+  text-align: left;
+}
+
+
+
+.leftbox {
+
+}
+
+.lab {
+  position: relative;
+}
+
+.lab2 {
+  font-weight: 200;
+  position: absolute;
+  top: 45%;
+  left: 45%;
+}
+
+.box1:hover, .box2:hover, .box3:hover, .box4:hover, .box5:hover, .box6:hover, .box7:hover, .box8:hover, .box9:hover, .box10:hover, .box11:hover, .box12:hover, .box13:hover, .box14:hover, .box15:hover, .box16:hover, .box17:hover, .box18:hover, .box19:hover, .box20:hover, .box21:hover, .box22:hover, .box23:hover, .box24:hover, .box25:hover, .box26:hover, .box27:hover, .box28:hover, .box29:hover, .box30:hover, .box31:hover, .box32:hover, .box33:hover, .box34:hover, .box35:hover {
+  background: hsl(1,0%,97%);
+}
+
+.boxmonth, .boxyear {
+  display: none;
+}

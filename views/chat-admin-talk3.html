@@ -1,0 +1,26 @@
+<script>
+$(function () {
+
+  socket.on('noticeDisconnect', function(data) {
+    console.log(data + " was disconnected")
+    // var selector = "." + data;
+    // $(selector).text('')
+  })
+
+  socket.on('chatToAdmin', function(data) {
+    console.log(data)
+
+    var date = new Date;
+    var seconds = date.getSeconds();
+    var minutes = date.getMinutes();
+    var hours = date.getHours();
+    var time = hours + ":" + minutes + ":" + seconds;
+    //check that the message is NOT empty string
+    //make message scroll
+
+    $(".convo").append('<li style="color: magenta; text-align: right" class="list-group-item"><strong>' + data.user + "<br>" + '</strong>' + data.message + '<br>' + time + '</li>');
+
+    $(".convo").animate({ scrollTop: $(document).height() }, "slow");
+  })
+})
+</script>

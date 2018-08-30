@@ -1,0 +1,58 @@
+
+<script>
+$(function () {
+  //var socket = io();
+  var time = function() {
+    var date = new Date;
+    var seconds = date.getSeconds();
+    var minutes = date.getMinutes();
+    var hours = date.getHours();
+    var time = hours + ":" + minutes + ":" + seconds;
+
+    return time
+  }
+
+  $('form').submit(function(){
+
+    var date = new Date;
+    var seconds = date.getSeconds();
+    var minutes = date.getMinutes();
+    var hours = date.getHours();
+    var time = hours + ":" + minutes + ":" + seconds;
+
+    console.log($('.chat-box').val())
+    var message = $('.chat-box').val()
+    var toSend = {message: message, user: room}
+    // emit the value of the textarea named chat-box
+    socket.emit('chatToAdmin', toSend);
+
+    // Display the message on your own screen
+    $(".convo").append('<li style="color: gray" class="list-group-item"><strong>You</strong>' + '<br>' + message + '<br>' + time + '</li>');
+    // scroll the convo window
+    $(".convo").animate({ scrollTop: $(document).height() }, "slow");
+    // reset the value of the text area to ''
+    $('.chat-box').val('');
+
+    // returning false for the self invoking function prevents the browser 
+    // from submitting the post request to the server.
+    return false;
+  })
+
+  socket.on('chatToPat', function(data) {
+    var date = new Date;
+    var seconds = date.getSeconds();
+    var minutes = date.getMinutes();
+    var hours = date.getHours();
+    var time = hours + ":" + minutes + ":" + seconds;
+
+    console.log(data)
+    $(".convo").append('<li style="color: magenta; text-align: right" class="list-group-item"><strong>Reising Orthodontics</strong>' + '<br>' + data.message + '<br>' + time + '</li>');
+    $(".convo").animate({ scrollTop: $(document).height() }, "slow");
+  })
+
+  setInterval(function(){ 
+    socket.emit('updateRoom') 
+  }, 2000);
+
+})
+</script>

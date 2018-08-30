@@ -1,0 +1,72 @@
+include base.html
+body
+  include header.pug
+  div(class="message2")= message
+  div(class="row")
+    div(class="col-xs-1 col-sm-4")
+    div(class="col-xs-10 col-sm-4")
+      ul(class="convo list-group")
+      form(method="post" action="/message")
+        h4(style="color: hsl(1,0%,80%)")= 'Chatting with ' + room
+        div(class="input-group col-xs-12 col-sm-4")
+          textarea(rows="2" cols="500" id="chat" type="text" class="chat-box form-control" name="chat" placeholder="Type your message")
+        div(class="input-group col-xs-1")
+            input(class="form-control btn-primary" value="Send" type="submit")
+        br
+        a(class="form-control btn" href="/")= 'Cancel'
+  script(src="/socket.io/socket.io.js")
+  script.
+    var socket = io();
+    var room_id = "#{room}"
+    socket.emit('subscribe', room_id)
+
+    $(function () {
+      var socket = io();
+
+      $('form').submit(function(){
+        var date = new Date;
+        var seconds = date.getSeconds();
+        var minutes = date.getMinutes();
+        var hours = date.getHours();
+        var time = hours + ":" + minutes + ":" + seconds;
+
+        /* Now that we are inside the submit function, let's fire a real post request to capture the message so that we can save the message to the db */
+        var message = $('.chat-box').val();
+        var toSend = {message: message, user:"Reising Orthodontics"};
+
+        // Now post it to the server
+        console.log("From jQuery post: the room name is " + room_id)
+        var post = $.post( "/message?room=" + room_id, message);
+        
+        //handle the callback
+        post.done(function(data) {
+          console.log("Posted: " + data + "to the database.")
+        });
+
+        // Display the message on your own screen
+        $(".convo").append('<li style="color: gray" class="list-group-item"><strong>Reising Orthodontics:</strong>' + '<br>' + message + '<br>' + time + '</li>');
+        // scroll the convo window
+        $(".convo").animate({ scrollTop: $(document).height() }, "slow");
+
+        // emit the value of the textarea named chat-box
+        socket.emit('chatToPat', toSend);
+
+        // reset the value of the text area to ''
+        $('.chat-box').val('');
+
+        // returning false for the self invoking function prevents the browser 
+        // from submitting the post request to the server.
+        return false;
+      })
+
+    })
+  include chat-admin-talk3.html
+
+
+
+  
+
+  
+
+
+

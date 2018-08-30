@@ -1,0 +1,63 @@
+<script type="text/jsx">
+
+var blocks2 = !{blocks2}
+
+class Buttons extends React.Component {
+  render() {
+    return (
+      <div className="blockButtons">
+        <button name="backBlock" className="btn backBlock">Back</button>
+        <button name="nextBlock" className="btn nextBlock">Next</button>
+        <br></br>
+        <button name="newBlock" className="btn newBlock">New</button>
+        <button name="editBlock" className="btn editBlock">Edit</button>
+      </div>
+    )
+  }
+}
+class Form extends React.Component {
+  render() {
+    console.log("This is props: " + this.props.blocks)
+    var id = this.props.blocks[0].id
+    var name = this.props.blocks[0].name
+    var description = this.props.blocks[0].description
+
+    return (
+      <div>
+        <label>Id</label>
+          <input type="text" readOnly className="blockId form-control" value={id}></input>
+        <label>Name</label>
+          <input type="text" className="name form-control" value={name}></input>
+        <br></br>
+        <label>Description</label>
+          <textarea type="text" className="description form-control" value={description}></textarea>
+        <br></br>
+
+        <label>Select start time:</label>
+          <select className="start-time form-control" id="start-time"></select>
+            <option className="None" selected="selected" value="None">None</option>
+        <br></br>
+        <label>Select end time:</label>
+          <select className="end-time form-control"></select>
+            <option className="None" selected="selected" value="None">None</option>
+      </div>
+    )
+  }
+}
+
+class CreateBlock extends React.Component {
+  render() {
+    return (
+      <div>
+        <Buttons/>
+        <Form blocks={this.props.blocks} />
+      </div>
+    )
+  }
+}
+ReactDOM.render(
+    <CreateBlock blocks={blocks2} />,
+    document.getElementById('container')
+);
+
+</script>

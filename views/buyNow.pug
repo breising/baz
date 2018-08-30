@@ -1,0 +1,19 @@
+include base.html
+body
+  include header.pug
+  div(class="message2")= message
+  div(class="row")
+    br
+    br
+    div(class="col-xs-1")
+    div(class="col-xs-11")
+      include buyNow.html
+  
+
+  script.
+    var socket = io();
+
+    socket.on('toastV2', function(message) {
+      console.log("Toastv2 data: " + message);
+      paint(message)
+    })

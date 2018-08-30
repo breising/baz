@@ -1,0 +1,16 @@
+include base.html
+body
+  include header.pug
+  div(class="row")
+  div(class="col-xs-1")
+  div(class="col-xs-10")
+    div(class="message2")= message
+    h6(style="color: gray")= username
+    h4(style="margin-top: 40px; color: gray;") Select a patient:
+    ul(class="list-group" style="margin-top: 20px")
+      if patientList
+        each val in patientList
+          li(class="list-group-item")
+            a(href="/patientDash?patient=" + val.id + "&firstname=" + val.firstname + "&lastname=" + val.lastname + "&dob=" + val.dob + "&id=" + val.id)= val.firstname + " " + val.lastname 
+    include youserDash.html
+  div(class="col-xs-1")

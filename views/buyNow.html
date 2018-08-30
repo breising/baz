@@ -1,0 +1,63 @@
+<form>
+    <input class="quantity" type="number" value="1" name="quantity">
+    <input type="submit" class="submit" placeholder="Buy">
+</form>
+<br>
+<br>
+<div id="inventory"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var inventory = [{ quantity: "no products", price: "0.00" }, { quantity: "no products", price: "0.00" }];
+
+    $(".submit").click(function() {
+        event.preventDefault();
+
+        var quantity = $(".quantity").val();
+        var url = "/buyNow?quantity=" + quantity;
+
+        var xhttp = new XMLHttpRequest();
+        
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              console.log(xhttp.responseText);
+                //json contains the requested data from the server
+                var json = JSON.parse(xhttp.responseText);
+                // now, emit the 'updated' data to all users in the room
+                socket.emit('toast', json)
+                // paint function contains JSX to renderDOM
+                paint(json);
+           }
+        };
+        xhttp.open("POST", url, true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send(); 
+    })
+</script>
+<script type="text/jsx">
+
+    class InventoryRow extends React.Component {
+      render() {
+        return (
+            <div>
+                <ul>Inventory List:</ul>
+                  <li>{this.props.product[0].name} {this.props.product[0].quantity}</li>
+                  <li>{this.props.product[1].name} {this.props.product[1].quantity}</li>
+            </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+          <InventoryRow product={inventory} />,
+          document.getElementById('inventory')
+        );
+
+    var paint = function(inventory) {
+      console.log("Paint running");
+      ReactDOM.render(
+        <InventoryRow product={inventory} />,
+        document.getElementById('inventory')
+      );
+    }
+</script>

@@ -1,0 +1,22 @@
+include base.html
+body
+  include header.pug
+  div(class="row")
+    div(class="col-xs-1")
+    div(class="col-xs-11")
+      div(class="message2")= message
+      ul(style="padding: 0px")
+        if inventory
+          each x in inventory
+            li(style="list-style: none")= x.name + ":  " + x.quantity
+
+      include main.html
+  script(src="/socket.io/socket.io.js")
+  script.
+    var socket = io();
+
+    socket.on('toastV2', function(message) {
+      console.log("This is the Client respones to toast: " + message)
+    })
+    //var inventoryList = #{inventory}
+    //console.log(inventoryList)

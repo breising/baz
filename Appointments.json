@@ -1,0 +1,11 @@
+{"Appointments": [{
+  "date": "1-1-2000",
+  "start": 237849234,
+  "end": 82394092834,
+  "duration": 234234243,
+  "codeName": "myCode",
+  "codeId": 4,
+  "patinetID": 3,
+  "patientName": "George Jones",
+  "chair": "ch2"
+  }]

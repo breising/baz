@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-xs-1 col-sm-4"></div>
+  <div class="col-xs-10 col-sm-4">
+    <br>
+    <br>
+    <h3 style="color: hsl(1,0%,80%)">Connected Now</h3>
+    <h5 style="color: hsl(1,0%,80%)">Click to Chat</h5>
+      <br>
+    <ul class="roomList list-group"></ul>
+    <br>
+        <a class="form-control btn" href="/">Cancel</a>
+  </div>
+</div>
+
+<script>
+
+    socket.on('newConnection', function(room) {
+      console.log("The chat-admin says: the room is: " + room)
+      $(".roomList").append('<a href="/chat-admin-talk?room=' + room + '"' + 'class="' + room + ' list-group-item">' + room + '</a>')
+    })
+
+    socket.on('noticeDisconnect', function(data) {
+      console.log(data + " was disconnected")
+      var selector = data
+      $("." + selector).remove()
+    })
+
+    socket.on('roomList', function(data) {
+      console.log("Receiving roomList")
+      console.log(data)
+      for(var y in data) {
+        console.log("here it is: " + data[y]);
+        $(".roomList").append('<a href="/chat-admin-talk?room=' + data[y] + '"' + 'class="' + data[y] + ' list-group-item">' + data[y] + '</a>')
+      }
+    })
+
+    socket.emit('getRoomList')
+
+    socket.on('broadcastRooms', function(data){
+      // data is the roomList from the server
+      for(var y in data) {
+        //console.log("here it is: " + data[y])
+        $(".roomList").append('<a href="/chat-admin-talk?room=' + data[y] + '"' + 'class="' + data[y] + ' list-group-item">' + data[y] + '</a>')
+      }
+    })
+
+    //when the admin clicks on a user(room), then
+    $(".room").click(function() {
+      var room = $(e.target).text()
+    }) 
+</script>
+<!--
+Notes about stupid behaviour of PUG:
+Must include the script tags exactly as you see in this route or else pug just doesn't like:
+
+      include base.html
+      body
+        include header.pug
+        div(class="message2")= message
+        include chat-admin.html  //this file contains a script src tag 
+                      // that must be closed and contain no scripts
+                        //<script src="/socket.io/socket.io.js"></script>
+        script.
+          var socket = io();
+          var room_id = "#{room}"
+          socket.emit('subscribe', room_id)
+        include chat-admin2.html
+                        // this file contains all the rest of your JS
+                        // including any jQuery
+
+PUG will NOT parse jQuery so your screwed there
+
+-->

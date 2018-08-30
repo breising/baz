@@ -1,0 +1,43 @@
+<br>
+<br>
+<div class="chat"></div>
+<div class="row">
+    <div class="col-xs-1 col-sm-4"></div>
+    <div class="col-xs-10 col-sm-4">
+        <form method="post" action="/login">
+        <br>
+        <br>
+          <h2 style="color: hsl(1,0%,80%)">Login</h2>
+          <br>
+          <label style="color: hsl(1,0%,80%)">Your email</label>
+          <br>
+            <input autocomplete="on" id="email" type="text" class="email form-control" name="email" placeholder="Email">
+
+            <br>
+            <label style="color: hsl(1,0%,80%)">Password</label>
+            <br>
+            <input id="password" type="password" class="password form-control" name="password" placeholder="Password">
+            <br>
+            <br>
+            <input class="form-control btn-primary" value="Login" type="submit">
+            <br>
+        </form>
+        <a class="form-control btn" href="/">Cancel</a>
+              <!-- GOOGLE PLUS SIGN IN BUTTON-->
+              <br>
+
+        <div id="signInButton">
+
+          <span class="g-signin"
+            data-scope="openid email"
+            data-clientid="809201132585-mitrgfaf1b8hql52b3mnauprdlda30sl.apps.googleusercontent.com"
+            data-redirecturi="postmessage"
+            data-accesstype="offline"
+            data-cookiepolicy="single_host_origin"
+            data-callback="signInCallback"
+            data-approvalprompt="force">
+          </span>
+        </div>
+        <div id="result"></div>
+    </div>
+</div>

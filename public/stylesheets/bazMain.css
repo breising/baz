@@ -1,0 +1,160 @@
+.top {
+	color: white;
+	width: 30%;
+	margin-top: 12px;
+}
+ul {
+	padding: 0px;
+}
+.list-group-item {
+	border: none;
+}
+
+.convo {
+	overflow: scroll;
+	height: 300px;
+	margin-top: 50px;
+}
+.space {
+	margin-left: 40px;
+}
+.vert-align {
+	vertical-align: middle;
+}
+.title {
+	font-size: 1.5em;
+}
+.height1 {
+	align-items: center;
+	height: 50px;
+	background-color: hsla(300,100%, 40%,0.5);
+}
+.message2 {
+	margin-left: 0px;
+	margin-top: 0px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+.white-no-decorate {
+	color: white;
+	text-decoration: none;
+	vertical-align: middle;
+	height: 20px;
+}
+
+.no-decorate {
+	text-decoration: none;
+}
+
+.grad {
+    background: hsl(200, 40%, 30%); /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(hsl(200, 100%, 50%), hsl(200, 100%, 40%)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(hsl(200, 100%, 30%), hsl(200, 100%, 40%)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(hsl(200, 100%, 30%), hsl(200, 100%, 40%)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(hsl(195, 100%, 30%), hsl(195f, 100%, 40%)); /* Standard syntax */
+}
+
+.shadow {
+	box-shadow: 8px 8px 20px 2px #E6E6E6;
+}
+
+.grad2 {
+    background: hsl(250, 40%, 30%); /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(hsl(250, 100%, 50%), hsl(200, 100%, 40%)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(hsl(250, 100%, 30%), hsl(200, 100%, 40%)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(hsl(250, 100%, 30%), hsl(200, 100%, 40%)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(hsl(250, 100%, 30%), hsl(195f, 100%, 40%)); /* Standard syntax */
+}
+
+.event {
+	border-bottom: 1px solid lightgray;
+	cursor: pointer;
+}
+
+.event p {
+	margin-bottom: 0px;
+	color: hsl(1,1%,70%);
+	margin-left: 8px;
+}
+
+p { 
+	word-break: break-all;
+}
+
+.userName {
+	position: relative;
+	top: 20px;
+	left: 0px;
+	width: 175px;
+	color: hsl(200,0%,70%);
+}
+
+.list-height {
+	height: 180px;
+}
+.add {
+	position: relative;
+	left: 15px;
+	top: -0px;
+}
+
+.image {
+	width: 90%;
+}
+
+.message {
+	position: absolute;
+	top: -1px;
+}
+
+.error {
+	position: absolute;
+	top: -1px;
+	right: 10px;
+}
+.bnav {
+	height: 50px;
+	/*background-color: hsl(200, 80%, 20%);*/
+}
+
+
+.flash {
+	color: red;
+}
+.white {
+	color: white;
+}
+
+.light {
+	color: hsl(200, 80%, 40%);
+}
+
+.aqua {
+	color: hsl(190, 90%, 60%);
+}
+.white:hover {
+	color: hsl(200,50%,60%);
+	text-decoration: none;
+}
+.ocure {
+	position: relative;
+	top: -10px;
+}
+.logo {
+	position: relative;
+	height: 40px;
+}
+.flash {
+	position: absolute;
+}
+
+.top li {
+	width: 62px;
+}
+
+@media (min-width: 768px) {
+	.list-height {
+		height: 400px;
+	}
+}

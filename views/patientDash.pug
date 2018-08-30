@@ -1,0 +1,11 @@
+include base.html
+body
+  include header.pug
+  div(class="row")
+  div(class="col-xs-1")
+  div(class="col-xs-11")
+    div(class="message2")= message
+    h6(style="color: gray")= username
+    h4(style="color: gray; margin-top: 30px")= title
+    include patientDash.html
+ 

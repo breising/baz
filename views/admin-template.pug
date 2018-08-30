@@ -1,0 +1,904 @@
+include base.html
+script(src="/public/javascripts/admin-template.js")
+
+body
+  include header.pug
+  div(class="message2")= message
+  div(class="row")
+    h4(style="margin-left: 30px;")= "Create a Block"
+    div(class="col-xs-1")
+    div(class="col-xs-5")
+      -//-start code for edit blocks
+     
+      button(class="btn" name="backBlock" class="backBlock")
+        = "< Back"
+
+      button(style="margin-left: 10px" class="btn" name="nextBlock" class="nextBlock")
+        = "Next >"
+      br
+      button(style="margin-top: 10px" class="btn" name="newBlock" class="newBlock")
+        = "New"
+
+      button(style="margin-left: 10px; margin-top: 10px" class="btn" name="editBlock" class="editBlock")
+        = "Edit"
+      br
+      label= "Id"
+        input(type="text" readonly class="blockId form-control")
+      br
+      label= "Name"
+        input(type="text" class="name form-control")
+      br
+      label= "Description"
+        textarea(type="text" class="description form-control")
+      br
+      br
+      label= "Select start time: "
+        select(class="start-time form-control" id="start-time")
+          option(class="None" selected="selected" value="None")= "None"
+      br
+      label= "Select end time: "
+        select(class="end-time form-control")
+          option(class="None" selected="selected" value="None")= "None"
+      br
+      br
+    div(class="col-xs-5")
+      div(class="select-codes")
+        label= "Select Code(s)"
+        br
+        ul(class="code-container list-group")
+          each x in codes
+            input(type="checkbox" class="code" + x.id + " code-check" name="code-id" value="" + x.id)
+            label= x.name
+            br
+
+        button(class="btn save-block" disabled)= "Save New Block"
+        br
+        button(class="btn save-block-edit" style="display:none" disabled)= "Save Edits"
+    div= "______________________________________________________"
+
+  //- ***********  above CREATE BLOCKS  *******************************
+
+
+
+
+
+
+
+
+
+  //- ***********  below BUILD SEQUENCE *******************************
+  div(class="row")
+    div(class="col-xs-1")
+    div(class="col-xs-5")
+      h3= "Block List"
+      //- ul(class="block-list")
+
+        //- each x in blocks
+        //-   //- Convert start_time millisecs to time format: "3:00PM"
+        //-   - var hours = (x.start_time/3600000).toFixed(1).split(".")[0]
+        //-   - var minutes = (x.start_time/3600000).toFixed(2).split(".")[1]
+        //-   - minutes = Math.round(Number("0." + String(minutes)) * 60)
+        //-   if hours > 12 
+        //-     hours = Number(hours) - 12
+        //-     - var start = String(hours) + ":" + minutes + "PM"
+        //-   else
+        //-     - var start = String(hours) + ":" + minutes + "AM"
+
+        //-   //- Convert end_time millisecs to time format: "3:00PM"
+        //-   - var hours = (x.end_time/3600000).toFixed(1).split(".")[0]
+        //-   - var minutes = (x.end_time/3600000).toFixed(2).split(".")[1]
+        //-   - minutes = Math.round(Number("0." + String(minutes)) * 60)
+        //-   if hours > 12 
+        //-     hours = Number(hours) - 12
+        //-     - var end = String(hours) + ":" + minutes + "PM"
+        //-   else
+        //-     - var end = String(hours) + ":" + minutes + "AM"
+
+
+        //-   li(class= x.id + "" id= x.id + "" style="list-style: none; color: gray;" onclick="getBlock(this)")
+        //-     div(style="display: none")= "ID: " + x.id
+        //-     div(style="font-weight: 600" class=x.name + "")= x.name
+        //-     div(style="display: none" class=x.description + "")= x.description
+        //-     div(class=start + "")= "Start: " + start
+        //-     div(class=end + "")= "End: " + end
+        //-     div(style="display: none" class="block-codes")= "Codes: "
+            
+
+        //-       - var codeName = []
+        //-       //- loop through the codes in the BLOCK
+        //-       each z in x.proc_codes.codes
+        //-         //- now loop through the CODES from the db table to match the ID with the NAME. z contains only the IDs whereas 'y' also has the IDs. If the ID in z matches the ID in y, then push that name.
+        //-         for y in codes
+        //-           if(y.id == z)
+        //-             - codeName.push(y.name)
+        //-       each w in codeName
+        //-         div(style="color: red; margin-left: 20px;")= w
+        //-   br
+
+      div(class="select-blocks")
+        label
+        br
+        ul(class="block-container list-group")
+          each x in blocks
+            //- Convert start_time millisecs to time format: "3:00PM"
+            - var hours = (x.start_time/3600000).toFixed(1).split(".")[0]
+            - var minutes = (x.start_time/3600000).toFixed(2).split(".")[1]
+            - minutes = Math.round(Number("0." + String(minutes)) * 60)
+            if hours > 12 
+              - hours = Number(hours) - 12
+              - var start = String(hours) + ":" + minutes + "PM"
+            else
+              - var start = String(hours) + ":" + minutes + "AM"
+
+            //- Convert end_time millisecs to time format: "3:00PM"
+            - var hours = (x.end_time/3600000).toFixed(1).split(".")[0]
+            - var minutes = (x.end_time/3600000).toFixed(2).split(".")[1]
+            - minutes = Math.round(Number("0." + String(minutes)) * 60)
+            if hours > 12 
+              - hours = Number(hours) - 12
+              - var end = String(hours) + ":" + minutes + "PM"
+            else
+              - var end = String(hours) + ":" + minutes + "AM"
+
+
+            input(type="checkbox" class="block" + x.id + " block-check" name="block-id" value="" + x.id)
+            label(style="font-size: 12px;")= x.name
+            br
+            label(style="font-size: 12px; margin-left: 30px;")= start + " to " + end
+            br
+
+    div(class="col-xs-5")
+      div(class="sequence-contain")
+        h3= "Build sequence"
+        br
+        button(class="btn" class="backSeq")= "< Back"
+
+        button(style="margin-left: 10px" class="btn" class="nextSeq")= "Next >"
+        br
+        button(style="margin-top: 10px" class="btn" class="newSeq")= "New"
+
+        button(style="margin-left: 10px; margin-top: 10px" class="btn" class="editSeq")= "Edit"
+        br
+        br
+        label= "ID"
+        input(readonly type="text" class="id-seq form-control")
+        br
+        label= "Name"
+        input(type="text" class="name-seq form-control")
+        br
+        label= "Description"
+          textarea(type="text" class="description-seq form-control")
+        br
+        button(style="display:none" class="btn-primary save-seq")= "Save New Squence"
+        button(style="display:none" class="btn-primary save-seq-edit")= "Save Edited Sequence"
+  div= "____________________________________________________"   
+
+  //- ***********  above CREATE  *******************************
+  //- ***********  below BUILD *******************************
+  
+  div(class="row")
+    div(class="col-xs-1")
+    div(class="col-xs-5")
+      div(class="day-contain")
+        h3= "Build a Day"
+
+        button(class="btn" class="backDay")= "< Back"
+
+        button(style="margin-left: 10px" class="btn" class="nextDay")= "Next >"
+        br
+        button(style="margin-top: 10px" class="btn" class="newDay")= "New"
+
+        button(style="margin-left: 10px; margin-top: 10px" class="btn" class="editDay")= "Edit"
+        br
+        br
+        label= "ID"
+        input(readonly type="text" class="id-day form-control")
+        br
+        label= "Name"
+        input(type="text" class="name-day form-control")
+        br
+        label= "Description"
+          textarea(type="text" class="description-day form-control")
+    div(class="col-xs-5")
+      div(class="chosenSeq")
+        h4= "Select a sequence: "
+        br
+        for x in chairs
+          label= x.name
+          select(style="margin-left: 30px" class="chairs" data-chair-name=x.id + "" id=x.id)
+            option(value="None" selected="selected")= "None"
+            for y in sequence
+              option(class=y.id + "" value=y.id)= y.name
+          br
+          br
+
+      button(style="display:none" class="btn-primary save-day")= "Save the Day"
+      button(style="display:none" class="btn-primary save-day-edit")= "Save Edited Day"
+      br
+      br
+      br
+
+script.
+  $(document).ready(function() {
+    var editMode = true;
+    var newMode = true;
+    //- convert milliseconds to formatted string... '3:00 PM'
+    var convertMilli = function(milliseconds) {
+        var hoursFloat = (milliseconds / 1000 / 60 / 60).toFixed(2)
+        //console.log("HoursFloat= " + hoursFloat);
+        var hours = String(hoursFloat).split(".")[0];
+        //console.log(hours)
+        var minutes = Number(String(hoursFloat).split(".")[1]).toFixed(0)
+        // minutes now is 67
+        minutes = Number(minutes)/100
+        minutes = Number(minutes) * 60;
+        minutes = minutes.toFixed(0);
+        if(minutes < 10){
+          minutes = String(minutes) + "0";
+        } else {
+          minutes = String(minutes);
+        }
+        //console.log(minutes)
+
+        if(hours > 12){ 
+          hours = Number(hours) - 12
+          //console.log(String(hours) + ":" + minutes + " " + "PM")
+          return String(hours) + ":" + minutes + " " + "PM"
+        } else {
+          //console.log(String(hours) + ":" + minutes + " " + "AM")
+          return String(hours) + ":" + minutes + " " + "AM"
+        }
+
+    };
+
+
+    //************************************************************
+    // this is how you get data into the script tag from the server
+    // this is the list of all blocks from the data base
+    var blocks2 = !{blocks2}
+    //console.log(blocks2)
+    var lengthCount = blocks2.length;
+    var blockCounter = 0;// initialize the counter for the next and back button
+    
+    // toggle display of the Create Blocks data.
+    $(".nextBlock").click(function(){
+      blockCounter = blockCounter + 1;
+
+      if(blockCounter > lengthCount-1) {
+        blockCounter = 0;
+        paintBlock();
+      } else {
+        paintBlock();
+      }     
+    })
+    // toggle back
+    $(".backBlock").click(function(){
+      if(blockCounter === 0) {
+          blockCounter = lengthCount;
+        }
+      blockCounter = blockCounter - 1;
+      paintBlock();
+    })
+
+    var modesOff = function() {
+      $(".save-block").hide();
+      $(".save-block-edit").hide();
+      //$(".selected").remove();
+      $(".name").val('');
+      $(".description").val('');
+      $('.code-check').prop('checked', false);//block check ??
+
+      $(".name").css('background-color','white')
+      $(".description").css('background-color','white')
+      $(".start-time").css('background-color','white')
+      $(".end-time").css('background-color','white')
+      $(".select-codes").css('background-color','white')
+
+      paintBlock();
+    }
+    // create a new block so enable the save button and clear the fields
+    $(".newBlock").click(function(){
+      if(newMode === true){
+        newMode = false;
+        editMode = true;
+        $(".save-block").show();
+        $(".save-block-edit").hide();
+        $(".save-block").removeAttr('disabled');
+        $(".selected").remove();
+        $(".name").val('');
+        $(".description").val('');
+        $('.code-check').prop('checked', false);// block-check?
+        $(".blockId").val('')
+        $(".start-time").val("")
+        $(".end-time").val("")
+
+        $(".name").css('background-color','hsl(180,60%,90%)')
+        $(".description").css('background-color','hsl(180,60%,90%)')
+        $(".start-time").css('background-color','hsl(180,60%,90%)')
+        $(".end-time").css('background-color','hsl(180,60%,90%)')
+        $(".select-codes").css('background-color','hsl(180,60%,90%)')
+      } else {
+        modesOff();
+        newMode = true;
+      }
+    })
+
+    $(".editBlock").click(function(){
+      // change colors to show edit mode:
+      if(editMode === true){
+        editMode = false;
+        newMode = true;
+        $(".name").css('background-color','hsl(200,60%,90%)')
+        $(".description").css('background-color','hsl(200,60%,90%)')
+        $(".start-time").css('background-color','hsl(200,60%,90%)')
+        $(".end-time").css('background-color','hsl(200,60%,90%)')
+        $(".select-codes").css('background-color','hsl(200,60%,90%)')
+        $(".save-block-edit").show();
+        $(".save-block").hide();
+        $(".save-block-edit").removeAttr('disabled');
+        $(".save-block").attr('disabled','disabled');
+        paintBlock();
+      } else {
+        editMode = true;
+        modesOff();
+      }
+    })
+    
+    // re-renders the display of data in the Create Block fields as you toggle through using the Next and Back buttons
+    var paintBlock = function() {
+      try {
+        $(".selected").remove();
+        $(".blockId").val(blocks2[blockCounter].id)
+        $(".name").val(blocks2[blockCounter].name);
+        $(".description").val(blocks2[blockCounter].description);
+        // uncheck all codes
+        $('.code-check').prop('checked', false); // block-check ?
+        // loop through all the codes for the block and set the checkboxes
+        blocks2[blockCounter].proc_codes.codes.forEach(function(item,index){
+          //console.log("HERE are the codes: " + index, item);
+          $(".code" +  item).prop('checked','true')
+        })
+        //console.log("Start time: " + blocks2[blockCounter].start_time);
+        //console.log("End time: " + blocks2[blockCounter].end_time);
+        // get the start time, convert to readable time, append the option so that it displays as the selected option
+        $(".start-time").append("<option class='selected' selected='selected' value='" + blocks2[blockCounter].start_time + "'>" + convertMilli(blocks2[blockCounter].start_time) + "</option>")
+        $(".end-time").append("<option class='selected' selected='selected' value='" + blocks2[blockCounter].end_time + "'>" + convertMilli(blocks2[blockCounter].end_time) + "</option>")
+      }
+      catch(err){
+        console.log("Error in paintBlock(): " + err);
+      }
+    }
+    // render the first object in the array
+    paintBlock();
+
+    $(".save-block-edit").click(function() {
+      var id = $(".blockId").val();
+      var start = $(".start-time").val();
+      var end = $(".end-time").val();
+      var name = $(".name").val();
+      var description = $(".description").val();
+      var codes = [];
+
+      //console.log("Times submitted: " + start + " " + end);
+
+      if(!start || !end || !name || !description) {
+        return alert("Please complete all fields.");
+      }
+
+      // get the code-ids of only the checked boxes
+      $("input[name='code-id']:checked").each(function(index){
+        codes.push($(this).val())
+      })
+
+      var url = "/admin-template-block-edit?start=" + start + "&end=" + end + "&name=" + name + "&description=" + description + "&id=" + id;
+      
+      // add the array of codes to the url...code0=3, code1=9 etc
+      codes.forEach(function(item, index) {
+        url = url + "&code" + index + "=" + item;
+      });
+
+      //console.log(url);
+
+      $.post(url, function(data, status){
+        $(".blockId").val('');
+        $(".start-time").val('');
+        $(".end-time").val('');
+        $(".name").val('');
+        $(".description").val('');
+        $('.code-check').prop('checked', false); // block-check
+        $(".codeList").empty();
+        //location.reload --> force the page to reload
+        // true -->  forces a hard reload i.e. empties the cache.
+        location.reload(true);
+        
+      });
+    })
+
+    // get the array of codeIDs from the list and post it to db
+    $(".save-block").click(function() {
+      //console.log("SAVE BLOCK")
+      var start = $(".start-time").val();
+      var end = $(".end-time").val();
+      var name = $(".name").val();
+      var description = $(".description").val();
+      var codes = [];
+
+      if(!start || !end || !name || !description) {
+        return alert("Please complete all fields.");
+      }
+
+      // get the code-ids of only the checked boxes
+      $("input[name='code-id']:checked").each(function(index){
+        codes.push($(this).val())
+      })
+
+
+      var url = "/admin-template-block?start=" + start + "&end=" + end + "&name=" + name + "&description=" + description;
+      
+      // add the array of codes to the url...code0=3, code1=9 etc
+      codes.forEach(function(item, index) {
+        url = url + "&code" + index + "=" + item;
+      });
+
+      //console.log(url);
+
+      $.post(url, function(data, status){
+        $(".blockId").val('');
+        $(".start-time").val('');
+        $(".end-time").val('');
+        $(".name").val('');
+        $(".description").val('');
+        $('.code-check').prop('checked', false);// block-check ?
+        $(".codeList").empty();
+        //location.reload --> force the page to reload
+        // true -->  forces a hard reload i.e. empties the cache.
+        location.reload(true);
+
+      });
+    })
+
+    //- var getCodes = function() {
+    //-     // check whether the element that you are about to create already exists by first trying to capture it... if it does exist then the next line if() will be false.
+    //-     var element = null;
+    //-     element = $(".a" + event.target.className).hasClass("a" + event.target.className)
+
+    //-     // if the target item is already in the list
+    //-     if(!element) {
+    //-         $(".codeList").append('<li style="list-style: none; margin-top: 8px; cursor: pointer; color: hsl(200,90%, 50%);" id="chosen" class="a' + event.target.className + '" onclick="removeItem()">' + event.target.innerText + "</li>")
+    //-     }
+    //-   }
+
+    //- var removeItem = function() {
+    //-     console.log("Remove item")
+    //-     console.log(event.target.className)
+    //-     $("." + event.target.className).remove();
+    //- }
+    
+    //- var getBlock = function(elementClicked) {
+    //-     // check whether the element that you are about to create already exists by first trying to capture it... if it does exist then the next line if() will be false.
+    //-     console.log("GetBlock");
+    //-     var element = null;
+    //-     console.log($(elementClicked).attr('class'));
+
+    //-     var theClass = $(elementClicked).attr('class');
+    //-     element = $(".a" + theClass).hasClass(".a" + theClass);
+
+    //-     console.log(element);
+
+    //-     // if the target item is already in the list...do nothing
+    //-     if(!element) {
+    //-         $(".chosenBlock").append('<li style="list-style: none; margin-top: 8px; cursor: pointer; color: hsl(200,90%, 50%);" class="a' + theClass + '" onclick="removeBlock()">' + elementClicked.innerText + "</li>")
+    //-     }
+    //- }
+
+    //- var removeBlock = function() {
+    //-     console.log("Remove block")
+    //-     console.log(event.target.className)
+    //-     $("." + event.target.className).remove();
+    //- }
+
+    // ****************************************************************
+    // ************* BUILD SEQUENCE ****************
+    var newSeqMode = true
+    var editSeqMode = true
+
+    // this gets the sequence list from the db on the server via PUG
+    var sequences2 = !{sequences2}
+    //console.log("Sequences from the server: " + sequences2)
+
+    var seqLength = sequences2.length;
+    var seqCounter = 0;
+
+    $(".nextSeq").click(function(){
+      //console.log("Next Seq")
+      seqCounter = seqCounter + 1
+      if(seqCounter === seqLength) {
+        seqCounter = 0;
+        renderSeq();
+      }  else {
+        renderSeq();
+      }    
+    })
+    // toggle back
+    $(".backSeq").click(function(){
+      if(seqCounter === 0) {
+          seqCounter = seqLength;
+        }
+      seqCounter = seqCounter - 1;
+      renderSeq();
+    })
+
+    // create a new block so enable the save button and clear the fields
+    $(".newSeq").click(function(){
+      if(newSeqMode === true){
+        newSeqMode = false;
+        editSeqMode = true;
+        $(".save-seq").show();
+        $(".save-seq-edit").hide();
+        //$(".selected").remove();
+        $(".id-seq").val('');
+        $(".name-seq").val('');
+        $(".description-seq").val('');
+        $('.block-check').prop('checked', false);// block-check?
+        //$('.code-check').prop('checked', false);
+
+        $(".name-seq").css('background-color','hsl(180,60%,90%)')
+        $(".description-seq").css('background-color','hsl(180,60%,90%)')
+        
+      } else {
+        seqModesOff();
+        newSeqMode = true;
+      }
+    })
+
+    $(".editSeq").click(function(){
+      // change colors to show edit mode:
+      if(editSeqMode === true){
+        editSeqMode = false;
+        newSeqMode = true;
+        $(".name-seq").css('background-color','hsl(200,60%,90%)')
+        $(".description-seq").css('background-color','hsl(200,60%,90%)')
+        $(".save-seq-edit").show();
+        $(".save-seq").hide();
+        renderSeq();
+      } else {
+        editSeqMode = true;
+        seqModesOff();
+      }
+    })
+
+    var seqModesOff = function() {
+      $(".save-seq").hide();
+      $(".save-seq-edit").hide();
+      //$(".selected").remove();
+      $(".name-seq").val('');
+      $(".description-seq").val('');
+      //$('.code-check').prop('checked', false);
+
+      $(".name-seq").css('background-color','white')
+      $(".description-seq").css('background-color','white')
+      renderSeq();
+    } // modesOFf
+
+    var renderSeq = function() {
+      try {
+        //console.log("The seqCounter is: " + seqCounter)
+        //console.log(sequences2[0])
+
+        // get the name and description
+        $(".id-seq").val(sequences2[seqCounter].id);
+        $(".name-seq").val(sequences2[seqCounter].name);
+        $(".description-seq").val(sequences2[seqCounter].description);
+
+        // uncheck all the blocks
+        $('.block-check').prop('checked', false); 
+
+        sequences2[seqCounter].blocks.blocks.forEach(function(item,index){
+          //console.log("HERE are the blocks: " + index + item);
+          $(".block" +  item).prop('checked','true')
+        })
+        
+
+        }
+        catch(err){
+          console.log("Error in renderSeq(): " + err);
+        }
+    }
+
+    renderSeq();
+
+    $(".save-seq").click(function() {
+      // get all the date to post
+      var name = $(".name-seq").val();
+      var description = $(".description-seq").val();
+      
+      if(!name || !description) {
+        return alert("Please add both a name and description.");
+      }
+      var blocks = [];
+
+      // get the code-ids of only the checked boxes
+      $("input[name='block-id']:checked").each(function(index){
+        blocks.push($(this).val())
+      })
+
+      if(!blocks[0]){
+        return alert("Must include at least one block.");
+      }
+
+      var url = "/admin-template-seq?name=" + name + "&description=" + description;
+      
+      // add the list array of codes to the url...code0=3, code1=9 etc
+      blocks.forEach(function(item, index) {
+        url = url + "&block" + index + "=" + item;
+      });
+
+      $.post(url, function(data, status){
+        $(".id-seq").val('');
+        $(".name-seq").val('');
+        $(".description-seq").val('');
+        $('.block-check').prop('checked', false);
+
+        //location.reload --> force the page to reload
+        // true -->  forces a hard reload i.e. empties the cache.
+        location.reload(true);
+      });
+    })
+
+    $(".save-seq-edit").click(function() {
+      // get all the date to post
+      var id = $(".id-seq").val();
+      var name = $(".name-seq").val();
+      var description = $(".description-seq").val();
+      
+      if(!name || !description) {
+        return alert("Please add both a name and description.");
+      }
+      var blocks = [];
+
+      // get the code-ids of only the checked boxes
+      $("input[name='block-id']:checked").each(function(index){
+        blocks.push($(this).val())
+      })
+
+      if(!blocks[0]){
+        return alert("Must include at least one block.");
+      }
+
+      var url = "/admin-template-seq-edit?name=" + name + "&description=" + description + "&id=" + id;
+      
+      // add the list array of codes to the url...code0=3, code1=9 etc
+      blocks.forEach(function(item, index) {
+        url = url + "&block" + index + "=" + item;
+      });
+
+      $.post(url, function(data, status){
+        $(".id-seq").val('');
+        $(".name-seq").val('');
+        $(".description-seq").val('');
+        $('.block-check').prop('checked', false);
+
+        //location.reload --> force the page to reload
+        // true -->  forces a hard reload i.e. empties the cache.
+        location.reload(true);
+      });
+    })
+
+    // ****************   Build DAY below  ***********************
+    // ****************   Build DAY below  ***********************
+
+    var newDayMode = true
+    var editDayMode = true
+
+    // this gets the sequence list from the db on the server via PUG
+    var days2 = !{days2}
+    
+
+    var dayLength = days2.length;
+    var dayCounter = 0;
+
+    $(".nextDay").click(function(){
+      //console.log("Next Day")
+      dayCounter = dayCounter + 1
+      if(dayCounter === dayLength) {
+        dayCounter = 0;
+        renderDay();
+      }  else {
+        renderDay();
+      }    
+    })
+    // toggle back
+    $(".backDay").click(function(){
+      if(dayCounter === 0) {
+          dayCounter = dayLength;
+        }
+      dayCounter = dayCounter - 1;
+      renderDay();
+    })
+
+
+    // create a new day so enable the save button and clear the fields
+    $(".newDay").click(function(){
+      if(newDayMode === true){
+        newDayMode = false;
+        editDayMode = true;
+        $(".save-day").show();
+        $(".save-day-edit").hide();
+        //$(".selected").remove();
+        $(".id-day").val('');
+        $(".name-day").val('');
+        $(".description-day").val('');
+        $(".chairs option").removeAttr('selected');
+
+        $(".name-day").css('background-color','hsl(180,60%,90%)')
+        $(".description-day").css('background-color','hsl(180,60%,90%)')
+        
+      } else {
+        dayModesOff();
+        newDayMode = true;
+      }
+    })
+
+    // Edit the current day
+    // Edit will preserve the ID of the exiting db entry and change only the name, description, and day info.
+    $(".editDay").click(function(){
+      // change colors to show edit mode:
+      if(editDayMode === true){
+        editDayMode = false;
+        newDayMode = true;
+        $(".name-day").css('background-color','hsl(200,60%,90%)')
+        $(".description-day").css('background-color','hsl(200,60%,90%)')
+        $(".save-day-edit").show();
+        $(".save-day").hide();
+        renderDay();
+      } else {
+        editDayMode = true;
+        dayModesOff();
+      }
+    })
+
+    // this re-renders the day after exiting edit mode or new mode
+    var dayModesOff = function() {
+      $(".save-day").hide();
+      $(".save-day-edit").hide();
+      //$(".selected").remove();
+      $(".name-day").val('');
+      $(".description-day").val('');
+      //$('.code-check').prop('checked', false);
+
+      $(".name-day").css('background-color','white')
+      $(".description-day").css('background-color','white')
+      renderDay();
+    } // modesOFf
+
+    // when you toggle through NEXT and BACK this renders the new data
+    var renderDay = function() {
+      try {
+        // remove all selections from the chair list
+        $(".chairs option").removeAttr('selected');
+
+        // get the name and description
+        $(".id-day").val(days2[dayCounter].id);
+        $(".name-day").val(days2[dayCounter].name);
+        $(".description-day").val(days2[dayCounter].description);
+
+        // iterate through the days
+        for(x in days2[dayCounter].chairs.chairs) {
+          // x is index value for each chair object
+          //console.log(x)
+          // obj is the chair object at the index[x]
+          var obj = days2[dayCounter].chairs.chairs[x]
+          //console.log(obj);
+          for(y in obj){
+            // y is the chair ID
+            // obj[y] accesses the SEQUENCE ID for this chair
+
+            // set the SELECT OPTION as 'selected' for each chair
+            // get the element by (SELECT box by ID) and (option by class)
+            var seq = obj[y];
+            var select = $("#" + y + " ." + seq).attr('selected','selected')
+          }
+
+        }
+
+        }
+        catch(err){
+          console.log("Error in renderDay(): " + err);
+        }
+    }
+
+    renderDay();
+
+
+
+
+
+
+    $(".save-day-edit").click(function() {
+      // get all the date to post
+      var id = $(".id-day").val();
+      var name = $(".name-day").val();
+      var description = $(".description-day").val();
+      
+      if(!name || !description) {
+        return alert("Please add both a name and description.");
+      }
+
+      var url = "/admin-template-day-edit?name=" + name + "&description=" + description + "&id=" + id;
+
+      var chairFlag = false;
+      // put the VALUES and NAMEs of all CHAIRS in the url
+      console.log($(".chair"));
+      $(".chairs").each(function(){
+        //Don't add it to the url UNLESS ALL chairs have a selected value !!
+        if($(this).val() === "None" || $(this).val() === "none" || $(this).val() === undefined) {
+          // do nothing
+        } else {
+          // chair flag indicates that at least ONE chair has a selection
+          
+          chairFlag = true;
+          url = url + "&chair" + $(this).data("chair-name") + "=" + $(this).val()
+        }
+      })
+      console.log(url);
+      if(chairFlag === false){
+        return alert("You must specify a sequence for at least one chair.")
+      }
+
+      $.post(url, function(data, status){
+        $(".id-day").val('');
+        $(".name-day").val('');
+        $(".description-day").val('');
+        $('.day-check').prop('checked', false);
+
+        //location.reload --> force the page to reload
+        // true -->  forces a hard reload i.e. empties the cache.
+        location.reload(true);
+      });
+    })
+
+    $(".save-day").click(function() {
+      // get all the date to post
+      var name = $(".name-day").val();
+      var description = $(".description-day").val();
+      
+      if(!name || !description) {
+        return alert("Please add both a name and description.");
+      }
+
+      var url = "/admin-template-day?name=" + name + "&description=" + description;
+
+      var chairFlag = false;
+      // put the VALUES and NAMEs of all CHAIRS in the url
+      $(".chairs").each(function(){
+        if($(this).val() === "None" || $(this).val() === "none" || $(this).val() === undefined) {
+          //Don't add it to the url
+        } else {
+          // flag means that at least one chair exists and is added
+          chairFlag = true;
+          url = url + "&chair" + $(this).data("chair-name") + "=" + $(this).val()
+        }
+        //console.log(url);
+      })
+      
+      if(chairFlag === false){
+        return alert("You must specify a sequence for at least one chair.")
+      }
+
+      $.post(url, function(data, status){
+        $(".id-day").val('');
+        $(".name-day").val('');
+        $(".description-day").val('');
+        $(".chairs option").removeAttr('selected');
+
+        //location.reload --> force the page to reload
+        // true -->  forces a hard reload i.e. empties the cache.
+        location.reload(true);
+      });
+    })
+  })// document ready
+
+  
+ 
+  
+  

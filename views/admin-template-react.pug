@@ -1,0 +1,293 @@
+include base.html
+script(src="/public/javascripts/admin-template.js")
+
+body
+  include header.pug
+  div(class="message2")= message
+  div(class="row")
+    h4(style="margin-left: 30px;")= "Create a Block"
+    div(class="col-xs-1")
+    div(class="col-xs-5")
+      -//-start code for edit blocks
+     
+      button(class="btn" name="backBlock" class="backBlock")
+        = "< Back"
+
+      button(style="margin-left: 10px" class="btn" name="nextBlock" class="nextBlock")
+        = "Next >"
+      br
+      button(style="margin-top: 10px" class="btn" name="newBlock" class="newBlock")
+        = "New"
+
+      button(style="margin-left: 10px; margin-top: 10px" class="btn" name="editBlock" class="editBlock")
+        = "Edit"
+      br
+      label= "Id"
+        input(type="text" readonly class="blockId form-control")
+      br
+      label= "Name"
+        input(type="text" class="name form-control")
+      br
+      label= "Description"
+        textarea(type="text" class="description form-control")
+      br
+      br
+      label= "Select start time: "
+        select(class="start-time form-control" id="start-time")
+          option(class="None" selected="selected" value="None")= "None"
+      br
+      label= "Select end time: "
+        select(class="end-time form-control")
+          option(class="None" selected="selected" value="None")= "None"
+      br
+      br
+    div(class="col-xs-5")
+      div(class="select-codes")
+        label= "Select Code(s)"
+        br
+        ul(class="code-container list-group")
+          each x in codes
+            input(type="checkbox" class="code" + x.id + " code-check" name="code-id" value="" + x.id)
+            label= x.name
+            br
+
+        button(class="btn save-block" disabled)= "Save New Block"
+        br
+        button(class="btn save-block-edit" style="display:none" disabled)= "Save Edits"
+  
+  div(class="row")
+    h4(style="margin-left: 30px;")= "Create a Block"
+    div(class="col-xs-1")
+    div(id="container" class="col-xs-5")
+      include reactScripts.html
+      
+
+
+
+
+script.
+  $(document).ready(function() {
+    var editMode = true;
+    var newMode = true;
+    //- convert milliseconds to formatted string... '3:00 PM'
+    var convertMilli = function(milliseconds) {
+        var hoursFloat = (milliseconds / 1000 / 60 / 60).toFixed(2)
+        //console.log("HoursFloat= " + hoursFloat);
+        var hours = String(hoursFloat).split(".")[0];
+        //console.log(hours)
+        var minutes = Number(String(hoursFloat).split(".")[1]).toFixed(0)
+        // minutes now is 67
+        minutes = Number(minutes)/100
+        minutes = Number(minutes) * 60;
+        minutes = minutes.toFixed(0);
+        //console.log(minutes)
+
+        if(hours > 12){ 
+          hours = Number(hours) - 12
+          //console.log(String(hours) + ":" + minutes + " " + "PM")
+          return String(hours) + ":" + minutes + " " + "PM"
+        } else {
+          //console.log(String(hours) + ":" + minutes + " " + "AM")
+          return String(hours) + ":" + minutes + " " + "AM"
+        }
+
+    };
+
+
+    //************************************************************
+    // this is how you get data into the script tag from the server
+    // this is the list of all blocks from the data base
+    var blocks2 = !{blocks2}
+    //console.log(blocks2)
+    var lengthCount = blocks2.length;
+    var blockCounter = 0;// initialize the counter for the next and back button
+    
+    // toggle display of the Create Blocks data.
+    $(".nextBlock").click(function(){
+      blockCounter = blockCounter + 1;
+      paintBlock();
+
+      if(blockCounter === lengthCount-1) {
+        blockCounter = -1;
+      }      
+    })
+    // toggle back
+    $(".backBlock").click(function(){
+      if(blockCounter === 0) {
+          blockCounter = lengthCount;
+        }
+      blockCounter = blockCounter - 1;
+      paintBlock();
+    })
+
+    var modesOff = function() {
+      $(".save-block").hide();
+      $(".save-block-edit").hide();
+      //$(".selected").remove();
+      $(".name").val('');
+      $(".description").val('');
+      $('.code-check').prop('checked', false);//block check ??
+
+      $(".name").css('background-color','white')
+      $(".description").css('background-color','white')
+      $(".start-time").css('background-color','white')
+      $(".end-time").css('background-color','white')
+      $(".select-codes").css('background-color','white')
+
+      paintBlock();
+    }
+    // create a new block so enable the save button and clear the fields
+    $(".newBlock").click(function(){
+      if(newMode === true){
+        newMode = false;
+        editMode = true;
+        $(".save-block").show();
+        $(".save-block-edit").hide();
+        $(".save-block").removeAttr('disabled');
+        $(".selected").remove();
+        $(".name").val('');
+        $(".description").val('');
+        $('.code-check').prop('checked', false);// block-check?
+        $(".blockId").val('')
+        $(".start-time").val("")
+        $(".end-time").val("")
+
+        $(".name").css('background-color','hsl(180,60%,90%)')
+        $(".description").css('background-color','hsl(180,60%,90%)')
+        $(".start-time").css('background-color','hsl(180,60%,90%)')
+        $(".end-time").css('background-color','hsl(180,60%,90%)')
+        $(".select-codes").css('background-color','hsl(180,60%,90%)')
+      } else {
+        modesOff();
+        newMode = true;
+      }
+    })
+
+    $(".editBlock").click(function(){
+      // change colors to show edit mode:
+      if(editMode === true){
+        editMode = false;
+        newMode = true;
+        $(".name").css('background-color','hsl(200,60%,90%)')
+        $(".description").css('background-color','hsl(200,60%,90%)')
+        $(".start-time").css('background-color','hsl(200,60%,90%)')
+        $(".end-time").css('background-color','hsl(200,60%,90%)')
+        $(".select-codes").css('background-color','hsl(200,60%,90%)')
+        $(".save-block-edit").show();
+        $(".save-block").hide();
+        $(".save-block-edit").removeAttr('disabled');
+        $(".save-block").attr('disabled','disabled');
+        paintBlock();
+      } else {
+        editMode = true;
+        modesOff();
+      }
+    })
+    
+    // re-renders the display of data in the Create Block fields as you toggle through using the Next and Back buttons
+    var paintBlock = function() {
+      try {
+        $(".selected").remove();
+        $(".blockId").val(blocks2[blockCounter].id)
+        $(".name").val(blocks2[blockCounter].name);
+        $(".description").val(blocks2[blockCounter].description);
+        // uncheck all codes
+        $('.code-check').prop('checked', false); // block-check ?
+        // loop through all the codes for the block and set the checkboxes
+        blocks2[blockCounter].proc_codes.codes.forEach(function(item,index){
+          //console.log("HERE are the codes: " + index, item);
+          $(".code" +  item).prop('checked','true')
+        })
+        //console.log("Start time: " + blocks2[blockCounter].start_time);
+        //console.log("End time: " + blocks2[blockCounter].end_time);
+        // get the start time, convert to readable time, append the option so that it displays as the selected option
+        $(".start-time").append("<option class='selected' selected='selected' value='" + blocks2[blockCounter].start_time + "'>" + convertMilli(blocks2[blockCounter].start_time) + "</option>")
+        $(".end-time").append("<option class='selected' selected='selected' value='" + blocks2[blockCounter].end_time + "'>" + convertMilli(blocks2[blockCounter].end_time) + "</option>")
+      }
+      catch(err){
+        console.log("Error in paintBlock(): " + err);
+      }
+    }
+    // render the first object in the array
+    //paintBlock();
+
+    $(".save-block-edit").click(function() {
+      var id = $(".blockId").val();
+      var start = $(".start-time").val();
+      var end = $(".end-time").val();
+      var name = $(".name").val();
+      var description = $(".description").val();
+      var codes = [];
+
+      //console.log("Times submitted: " + start + " " + end);
+
+      if(!start || !end || !name || !description) {
+        return alert("Please complete all fields.");
+      }
+
+      // get the code-ids of only the checked boxes
+      $("input[name='code-id']:checked").each(function(index){
+        codes.push($(this).val())
+      })
+
+      var url = "/admin-template-block-edit?start=" + start + "&end=" + end + "&name=" + name + "&description=" + description + "&id=" + id;
+      
+      // add the array of codes to the url...code0=3, code1=9 etc
+      codes.forEach(function(item, index) {
+        url = url + "&code" + index + "=" + item;
+      });
+
+      //console.log(url);
+
+      $.post(url, function(data, status){
+        $(".start-time").val('');
+        $(".end-time").val('');
+        $(".name").val('');
+        $(".description").val('');
+        $('.code-check').prop('checked', false); // block-check
+        $(".codeList").empty();
+        //location.reload();
+      });
+    })
+
+    // get the array of codeIDs from the list and post it to db
+    $(".save-block").click(function() {
+      //console.log("SAVE BLOCK")
+      var start = $(".start-time").val();
+      var end = $(".end-time").val();
+      var name = $(".name").val();
+      var description = $(".description").val();
+      var codes = [];
+
+      if(!start || !end || !name || !description) {
+        return alert("Please complete all fields.");
+      }
+
+      // get the code-ids of only the checked boxes
+      $("input[name='code-id']:checked").each(function(index){
+        codes.push($(this).val())
+      })
+
+
+      var url = "/admin-template-block?start=" + start + "&end=" + end + "&name=" + name + "&description=" + description;
+      
+      // add the array of codes to the url...code0=3, code1=9 etc
+      codes.forEach(function(item, index) {
+        url = url + "&code" + index + "=" + item;
+      });
+
+      //console.log(url);
+
+      $.post(url, function(data, status){
+        $(".start-time").val('');
+        $(".end-time").val('');
+        $(".name").val('');
+        $(".description").val('');
+        $('.code-check').prop('checked', false);// block-check ?
+        $(".codeList").empty();
+
+        location.reload();
+
+      });
+    });
+  });

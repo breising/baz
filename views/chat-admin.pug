@@ -1,0 +1,21 @@
+include base.html
+body
+  include header.pug
+  div(class="message2")= message
+  script(src="/socket.io/socket.io.js")
+  script.
+
+    var socket = io();
+    var room_id = "#{room}"
+
+    // Remove the '@' char from the email address (room_id)
+    var pos1 = room_id.search("@")
+    var pos2 = pos1 + 1
+    var first = room_id.slice(0,pos1)
+    var second = room_id.slice(pos2,(room_id.length))
+    var room = first + "_" + second
+    console.log(room)
+    //room = the Email with '@' replaced by '_'
+
+    //socket.emit('subscribe', room)
+  include chat-admin.html

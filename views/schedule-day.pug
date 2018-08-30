@@ -1,0 +1,67 @@
+include base.html
+body
+  include header.pug
+  div(class="message2")= message
+  script(src="/public/javascripts/schedule-day.js")
+
+  div(class="shiftcontain")
+    div(class="shiftback")= "<"
+    div(class="month")= month
+    div(class="day")= day
+    div(class="year")= year
+    div(class="shiftforward")= ">"
+
+div(class="chairs")
+div(class="chair-contain")
+  div(class="chair-box lab")
+    div(class="lab2")
+  //- paint the chairs row at top
+  each x in chairs
+    div(class="chair-box lab " + x.name)
+      div(class="lab2")= x.name
+
+//- calculate how many total time intervals for a 12 hour day in the office
+- var timeSpan = (12 * 60)/5
+//- increment the while loop
+- var y =0
+//- the hour to no decimals
+- var hour = Number(7).toFixed(0)
+//- minutes to 2 decimal places
+- var min = Number(.00).toFixed(2)
+
+div(class="time-contain")
+  while y < timeSpan
+    - var time = Number(hour) + Number(min)
+    - time = time.toFixed(2)
+    //- paint the LEFT Hand div which contains the time label
+    div(class="time-box lab")= time
+
+    each x in chairs
+      //- paint the divs under each chair colum
+      div(class= time + " " + x.name+ " time-box")
+
+    - y=y+1
+
+    //- User Number to prevent string coercions
+    //- Correct for base 60 counting in minutes
+    - if (Number(min) == Number(0.55))
+        - hour = Number(hour) + Number(1);
+        - min = Number(0.00).toFixed(2) 
+    - else
+        - min = Number(min) + Number(0.05)
+        - min = min.toFixed(2)
+    //- correct HOURS for non-military time
+    - if (Number(hour) == 13)
+      - hour = Number(hour) - Number(12) 
+    
+script.
+  $(".8.55").text("This is 7");
+  var seven = document.getElementsByClassName("7.00 con2");
+  seven[0].innerHTML = "Hello World!";
+
+  
+
+  
+
+
+
