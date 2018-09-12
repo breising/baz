@@ -2,6 +2,18 @@
 --to run these sql statements, nav to the root dir of project and type
 --"psql -f deletedb.sql baz"
 
+--to get into psql you must first change the linux user from "vagrant" to "postgres" via :  "$ sudo su postgres"
+
+-- then "psql"  --> viola
+
+-- then connect to the database via: $ \c baz
+
+-- now you see: baz=#
+
+-- start entering sql statements
+
+-- baz=# selct * from blocks;
+
 drop table youser cascade;
 -- drop table "order" cascade;
 drop table category cascade;
@@ -26,11 +38,11 @@ drop table day cascade;
 
 
 CREATE TABLE youser (
-    id SERIAL PRIMARY KEY,
-    email varchar(255),
-    password varchar(255),
-    alias varchar(255)
-  );
+  id SERIAL PRIMARY KEY,
+  email varchar(255),
+  password varchar(255),
+  alias varchar(255)
+);
 
 CREATE TABLE category (
   id SERIAL PRIMARY KEY,
@@ -119,7 +131,8 @@ CREATE TABLE appliedtemplate (
 
 CREATE TABLE chair (
   id SERIAL PRIMARY KEY,
-  name varchar(255)
+  name varchar(255),
+  alias varchar(255)
 );
 
 CREATE TABLE block (
@@ -128,6 +141,7 @@ CREATE TABLE block (
   description varchar,
   start_time INTEGER,
   end_time INTEGER,
+  duration INTEGER,
   proc_codes JSON
 );
 
@@ -136,6 +150,13 @@ CREATE TABLE sequence (
   name varchar,
   description varchar,
   blocks JSON
+);
+
+CREATE TABLE template (
+  id SERIAL PRIMARY KEY,
+  name varchar,
+  description varchar,
+  day varchar
 );
 
 CREATE TABLE day (
@@ -215,12 +236,46 @@ INSERT INTO status(name, description) VALUES('Pending Comp','Completed intercept
 INSERT INTO status(name, description) VALUES('Finished','Completed definitive treatment, no further treatment planned.');
 INSERT INTO status(name, description) VALUES('Financial pause','Temporarily paused active treatment due to non-payment.');
 
-INSERT INTO chair(name) VALUES('con1');
-INSERT INTO chair(name) VALUES('con2');
-INSERT INTO chair(name) VALUES('ch1');
-INSERT INTO chair(name) VALUES('ch2');
-INSERT INTO chair(name) VALUES('ch3');
-INSERT INTO chair(name) VALUES('ch4');
+INSERT INTO chair(name) VALUES('1');
+INSERT INTO chair(name) VALUES('2');
+INSERT INTO chair(name) VALUES('3');
+INSERT INTO chair(name) VALUES('4');
+INSERT INTO chair(name) VALUES('5');
+INSERT INTO chair(name) VALUES('7');
+INSERT INTO chair(name) VALUES('8');
+INSERT INTO chair(name) VALUES('9');
+INSERT INTO chair(name) VALUES('10');
+INSERT INTO chair(name) VALUES('11');
+INSERT INTO chair(name) VALUES('12');
+INSERT INTO chair(name) VALUES('13');
+INSERT INTO chair(name) VALUES('14');
+INSERT INTO chair(name) VALUES('15');
+INSERT INTO chair(name) VALUES('16');
+INSERT INTO chair(name) VALUES('17');
+INSERT INTO chair(name) VALUES('18');
+INSERT INTO chair(name) VALUES('19');
+INSERT INTO chair(name) VALUES('20');
+INSERT INTO chair(name) VALUES('21');
+INSERT INTO chair(name) VALUES('22');
+INSERT INTO chair(name) VALUES('23');
+INSERT INTO chair(name) VALUES('24');
+INSERT INTO chair(name) VALUES('25');
+INSERT INTO chair(name) VALUES('26');
+INSERT INTO chair(name) VALUES('27');
+INSERT INTO chair(name) VALUES('28');
+INSERT INTO chair(name) VALUES('29');
+INSERT INTO chair(name) VALUES('30');
+INSERT INTO chair(name) VALUES('31');
+INSERT INTO chair(name) VALUES('32');
+INSERT INTO chair(name) VALUES('33');
+INSERT INTO chair(name) VALUES('34');
+INSERT INTO chair(name) VALUES('35');
+INSERT INTO chair(name) VALUES('36');
+INSERT INTO chair(name) VALUES('37');
+INSERT INTO chair(name) VALUES('38');
+INSERT INTO chair(name) VALUES('39');
+INSERT INTO chair(name) VALUES('40');
+
 
 
 

@@ -26,6 +26,8 @@ module.exports = function(app) {
   var pool = new pg.Pool(config)
   var dbClient = ''
 
+
+// this POST is from the "Build a day" process
   app.post('/admin-template-day', function (req, res) {
     var chairArray = [];
     //var chairObj = {}

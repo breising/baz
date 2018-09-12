@@ -1,0 +1,44 @@
+include base.html
+body
+  include header.pug
+  script(src="/public/javascripts/jquery-ui.min.js")
+  script(src="/public/javascripts/template-edit.js")
+  link(rel="stylesheet" type="text/css" href="public/stylesheets/jquery-ui.min.css")
+  link(rel="stylesheet" type="text/css" href="public/stylesheets/jquery-ui.min.css")
+  link(rel="stylesheet" type="text/css" href="public/stylesheets/jquery-ui.structure.min.css")
+  link(rel="stylesheet" type="text/css" href="public/stylesheets/jquery-ui.theme.min.css")
+  link(rel="stylesheet" type="text/css" href="public/stylesheets/template-edit.css")
+
+  div(class="message2")= message
+  div(class="main-contain")
+    div(class="left-side-contain")
+      label()= "Location"
+      select()
+        option(value="volvo")= "Norcross"
+        option(value="saab")= "Johns Creek"
+        option(value="mercedes")= "Mercedes"
+        option(value="audi")= "Audi"
+  
+      label()= "Templates:"
+      
+      div(class="template-list")
+        each x in days
+          div(class="template-item tItem-"+x.id id=x.id)= x.name
+      div(class="button-contain")
+        button(class="template-button" type="button" action="/template-add")= "New Template"
+        button(class="template-button" type="button" action="/template-edit")= "Edit Template"
+        button(class="template-button" type="button" action="/template-edit")= "Apply Template"
+        button(class="template-button" type="button" action="/template-edit")= "UnApply Template"
+        
+    include template-edit.html
+  
+  
+
+
+
+  
+
+  
+
+
+

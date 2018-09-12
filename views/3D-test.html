@@ -14,8 +14,8 @@
     Press "Q" to toggle world/local space, keep "Ctrl" down to snap to grid
     </div>
 
-    <script src="/three.min.js"></script>
-    <script src="js/controls/TransformControls.js"></script>
+    <script src="/public/javascripts/three.min.js"></script>
+    <script src="/public/javascripts/TransformControls.js"></script>
 
     <script>
       var camera, scene, renderer, control;
@@ -35,10 +35,10 @@
         var light = new THREE.DirectionalLight( 0xffffff, 2 );
         light.position.set( 1, 1, 1 );
         scene.add( light );
-        var texture = new THREE.TextureLoader().load( 'textures/crate.gif', render );
+        var texture = new THREE.TextureLoader().load( 'public/javascripts/crate.gif', render );
         texture.mapping = THREE.UVMapping;
         texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        var geometry = new THREE.BoxBufferGeometry( 200, 200, 200 );
+        var geometry = new THREE.BoxBufferGeometry( 100, 200, 200 );
         var material = new THREE.MeshLambertMaterial( { map: texture } );
         control = new THREE.TransformControls( camera, renderer.domElement );
         control.addEventListener( 'change', render );

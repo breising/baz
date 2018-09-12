@@ -13,6 +13,51 @@ $(document).ready(function() {
 
   // var monthsArray = ["Jan","Feb","Mar","April","May","June","July","Aug","Sept","Oct","Nov","Dec"];
 
+  var toMilitary = function(millisec) {
+    var hours = Number(millisec/1000/60/60).toFixed(0);
+    var minutes = Number(millisec/1000/60/60).toFixed(2).split(".")[1]; 
+    console.log(String(hours) + ":" + String(minutes));
+    return String(hours) + ":" + String(minutes);
+  }
+
+  var labelToMilli = function(label){
+    var array = String(label).split(":")[1].split("");
+    while(array.length > 2) {
+      array.pop();
+    }
+    var minutes = array.join("");
+
+    var hour = Number(label.split(":")[0]);
+    var millisec = (hour * 60 * 60 * 1000) + (minutes * 60 * 1000);
+    console.log(millisec);
+
+    return millisec;
+  }
+
+  var militaryTo12 = function(timeLabel) {
+    //converts 24 hour militart time to AMPM
+
+    // if the hour number is greater than 12, then subtract 12
+    if(Number(timeLabel.split(":")[0]) > 11) {
+      var newLabel = timeLabel + "PM";
+      // if it's greater than 11, then make it PM else AM
+      if(Number(timeLabel.split(":")[0]) > 12){
+        var newHour = Number(timeLabel.split(":")[0]) - 12;
+        newLabel = String(newHour) + ":" + String(timeLabel.split(":")[1]) + "PM";
+        return newLabel;
+      } else { // if greater than 11 only
+        return newLabel;
+      } // end second if
+    } else { // for first if ..nothing happens except adding AM
+      return timeLabel + "AM";
+    }
+  }
+
+  var time1 = 1200000;//"12:00";
+  //var time2 = "3:20PMhjk";
+  console.log(militaryTo12(toMilitary(time1)));
+  //console.log(labelToMilli(time2));
+
 var firstClick = "";
 var toggle = false;
 

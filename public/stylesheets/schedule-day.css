@@ -1,4 +1,11 @@
 
+
+
+#hide {
+  display: none
+}
+
+
 .time-contain {
   margin-top: 0px;
   margin-left: 1vw;
@@ -111,7 +118,7 @@
   width: 3vw;
 }
 
-.time-box {
+.time-box, .time-label {
   font-size: 11px;
   font-weight: 100;
   color: hsl(1, 0%, 40%);
@@ -146,3 +153,46 @@
 .boxmonth, .boxyear {
   display: none;
 }
+
+.dropdown-hold {
+  display: none;
+}
+
+.dropdown-contain {
+  position: relative;
+  top: 24px;
+  background-color: #4CAF50;
+  color: blue;
+}
+
+.dropdown-option:hover {
+  background-color: #3e8e41;
+}
+
+.dropdown-contain .dropdown-option {
+  height: 28px;
+}
+
+/*.time-box:hover {
+  background-color: #3e8e41;
+}
+
+.time-box:hover .dropdown-contain{
+  background-color: #ddd;
+  display: block;
+}
+
+.dropdown-contain:hover {
+  display: block;
+}*/
+
+
+
+
+
+
+
+
+
+
+

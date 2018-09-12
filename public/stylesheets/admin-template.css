@@ -4,9 +4,9 @@
   width: 200px;
 }
 .block-container {
-  height: 380px;
+  height: 220px;
   overflow: scroll;
-  width: 200px;
+  
 }
 .codeList {
   position: relative;
@@ -32,7 +32,6 @@
 
 .sequence-contain {
   position:relative;
-  width: 200px;
   height: 100px; 
 }
 
@@ -86,4 +85,7 @@
 .editBlock {
   margin-bottom: 10px;
   margin-left: 10px;
+}
+.description-sequence {
+ 
 }

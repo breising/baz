@@ -1,0 +1,134 @@
+include base.html
+body
+  include header.pug
+  div(class="message2")= message
+  script(src="/public/javascripts/template-build.js")
+
+  div(class="row" style="margin-left: 0px")
+    div(class="col-xs-10")
+      h3= "Build/Edit Templates"
+  div(class="row" style="margin-left: 0px")
+    div(class="col-xs-6")
+      h5= "Blocks"
+      div(class="select-blocks")
+        ul(class="block-container list-group")
+          each x in blocks
+            //- Convert start_time millisecs to time format: "3:00PM"
+            - var hours = (x.start_time/3600000).toFixed(1).split(".")[0]
+            - var minutes = (x.start_time/3600000).toFixed(2).split(".")[1]
+            - minutes = Math.round(Number("0." + String(minutes)) * 60)
+            if hours > 12 
+              - hours = Number(hours) - 12
+              - var start = String(hours) + ":" + minutes + "PM"
+            else
+              - var start = String(hours) + ":" + minutes + "AM"
+
+            //- Convert end_time millisecs to time format: "3:00PM"
+            - var hours = (x.end_time/3600000).toFixed(1).split(".")[0]
+            - var minutes = (x.end_time/3600000).toFixed(2).split(".")[1]
+            - minutes = Math.round(Number("0." + String(minutes)) * 60)
+            if hours > 12 
+              - hours = Number(hours) - 12
+              - var end = String(hours) + ":" + minutes + "PM"
+            else
+              - var end = String(hours) + ":" + minutes + "AM"
+
+            div(class="block-item" id=x.id)
+              div(class="block" + x.id + " block-check" name="block-id" value="" + x.id)= x.name
+              div(class="block")= start + " to " + end
+
+    div(class="col-xs-6")
+      div(class="sequence-contain")
+        h5= "Templates"
+        button(class="btn" class="backSeq")= "< Back"
+
+        button(style="margin-left: 5px" class="btn" class="nextSeq")= "Next >"
+        
+        button(style="margin-top: 5px" class="btn" class="newSeq")= "New"
+
+        button(style="margin-left: 5px; margin-top: 5px" class="btn" class="editSeq")= "Edit"
+        
+        input(style="margin-top: 5px" placeholder="Id" readonly type="text" class="id-seq form-control")
+        input(type="text" placeholder="Name" class="name-seq form-control")
+        
+        input(type="text" placeholder="Description" class="description-seq form-control")
+        button(class="btn-primary save-seq")= "Save Template"
+        //-style="display:none"
+
+
+  //- div(class="dropdown-hold")
+  //-   div(class="dropdown-contain")
+  //-     each x in blocks
+  //-       div(class="dropdown-option" id=x.id)= x.name
+  //-         div(class="name" style="display:none")=x.name
+  //-         div(class="start_time" style="display:none")=x.start_time
+  //-         div(class="end_time" style="display:none")=x.end_time
+//-div(class="chairs") 
+div(class="chair-contain")
+  div(class="chair-box lab")
+    div(class="lab2")
+  //- paint the chairs row at top
+  each x in chairs
+    div(class="chair-box lab " + x.name)
+      div(class="lab2")= x.name
+
+
+//- calculate how many total time intervals for a 17 hour day in the office
+- var timeSpan = (17 * 60)/5
+//- initialize y
+- var y =0
+//- the hour to no decimals..starting at 5:00AM
+- var hour = Number(5).toFixed(0)
+//- minutes to 0 decimal places
+- var min = Number(00).toFixed(0);
+
+//- convert time from minutes from 12:00AM=0 to Label time as '9:30'
+//- assume time begins at 12:00AM or zero seconds
+script
+  - var toLabel = function(sec) {
+  - var hours = Number(sec/60/60).toFixed(0).split(".")[0];
+  - var minutes = Number(sec/60/60).toFixed(2).split(".")[1]; }
+
+- console.log(toLabel(8*60*60));
+
+div(class="time-contain")
+  while y < timeSpan
+    - if (min < 10) // compensate for printing time as "8:0 AM" rather than "8:00 AM"
+      - bMin = "0" + String(min);
+      - var time = String(hour) + ":" + String(bMin) + "AM";
+    - else
+      - var time = String(hour) + ":" + String(min) + "AM";
+    //- paint the LEFT Hand div which contains the time label
+    div(class="time-label")= time
+
+    each x in chairs
+      //- paint the divs under each chair colum
+      div(class="time-box")
+        div(id="hide" class= time)= time
+        div(id="hide" class= x.name)= x.name 
+    //- change name in db to numbers
+
+    - y=y+1 // increment the while loop
+    
+    //- User Number to prevent string coercions
+    //- Correct for base 60 counting in minutes
+    - if (Number(min) >= Number(55))// this is relavent only when counting by 5's...need to change to if >= to 59.98
+        - hour = Number(hour) + Number(1);// increment the hour
+        - min = Number(00).toFixed(0) // reset minutes to zero
+    - else
+        - min = Number(min) + Number(5) // increment the minutes again
+        - min = min.toFixed(0) // make sure it's the right decimal and string
+    //- correct HOURS for non-military time
+    - if (Number(hour) == 13)
+      - hour = Number(hour) - Number(12) 
+
+
+
+
+
+  
+
+  
+
+
+

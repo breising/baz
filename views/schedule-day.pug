@@ -1,17 +1,21 @@
-include base.html
+include base2.html
 body
   include header.pug
   div(class="message2")= message
   script(src="/public/javascripts/schedule-day.js")
 
-  div(class="shiftcontain")
-    div(class="shiftback")= "<"
-    div(class="month")= month
-    div(class="day")= day
-    div(class="year")= year
-    div(class="shiftforward")= ">"
+  include template-input.html
 
-div(class="chairs")
+
+
+  div(class="dropdown-hold")
+    div(class="dropdown-contain")
+      each x in blocks
+        div(class="dropdown-option" id=x.id)= x.name
+          div(class="name" style="display:none")=x.name
+          div(class="start_time" style="display:none")=x.start_time
+          div(class="end_time" style="display:none")=x.end_time
+div(class="chairs") 
 div(class="chair-contain")
   div(class="chair-box lab")
     div(class="lab2")
@@ -20,44 +24,51 @@ div(class="chair-contain")
     div(class="chair-box lab " + x.name)
       div(class="lab2")= x.name
 
-//- calculate how many total time intervals for a 12 hour day in the office
-- var timeSpan = (12 * 60)/5
+
+//- calculate how many total time intervals for a 17 hour day in the office
+- var timeSpan = (17 * 60)/5
 //- increment the while loop
 - var y =0
-//- the hour to no decimals
-- var hour = Number(7).toFixed(0)
-//- minutes to 2 decimal places
-- var min = Number(.00).toFixed(2)
+//- the hour to no decimals..starting at 5:00AM
+- var hour = Number(5).toFixed(0)
+//- minutes to 0 decimal places
+- var min = Number(00).toFixed(0);
+
 
 div(class="time-contain")
   while y < timeSpan
-    - var time = Number(hour) + Number(min)
-    - time = time.toFixed(2)
+    - if (min < 10) // compensate for printing time as "8:0 AM" rather than "8:00 AM"
+      - bMin = "0" + String(min);
+      - var time = String(hour) + ":" + String(bMin);
+    - else
+      - var time = String(hour) + ":" + String(min);
     //- paint the LEFT Hand div which contains the time label
-    div(class="time-box lab")= time
+    div(class="time-label")= time
 
     each x in chairs
       //- paint the divs under each chair colum
-      div(class= time + " " + x.name+ " time-box")
+      div(class="time-box")
+        div(id="hide" class= time)= time
+        div(id="hide" class= x.name)= x.name
 
-    - y=y+1
+    - y=y+1 // increment the while loop
 
     //- User Number to prevent string coercions
     //- Correct for base 60 counting in minutes
-    - if (Number(min) == Number(0.55))
-        - hour = Number(hour) + Number(1);
-        - min = Number(0.00).toFixed(2) 
+    - if (Number(min) >= Number(55))// this is relavent only when counting by 5's...need to change to if >= to 59.98
+        - hour = Number(hour) + Number(1);// increment the hour
+        - min = Number(00).toFixed(0) // reset minutes to zero
     - else
-        - min = Number(min) + Number(0.05)
-        - min = min.toFixed(2)
+        - min = Number(min) + Number(5) // increment the minutes again
+        - min = min.toFixed(0) // make sure it's the right decimal and string
     //- correct HOURS for non-military time
     - if (Number(hour) == 13)
       - hour = Number(hour) - Number(12) 
-    
-script.
-  $(".8.55").text("This is 7");
-  var seven = document.getElementsByClassName("7.00 con2");
-  seven[0].innerHTML = "Hello World!";
+
+  include dropdown.html  
+
+
+
 
   
 

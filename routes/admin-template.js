@@ -72,7 +72,6 @@ module.exports = function(app) {
                     var chairs = result.rows;
 
 
-
                     dbClient.query('SELECT * from sequence', function (err, result) {
                       if (err) {
                         console.log("Error getting data from table block." + err)
@@ -82,9 +81,6 @@ module.exports = function(app) {
                         //call function to pass info into it
                         //console.log(result.rows[0]);
                         var sequence = result.rows;
-
-
-
 
 
                         dbClient.query('SELECT * from day', function (err, result) {

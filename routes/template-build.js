@@ -36,7 +36,7 @@ module.exports = function(app) {
 
   var message = ""
 
-  app.get('/schedule-day', function (req, res) {
+  app.get('/template-build', function (req, res) {
     // Don't need the time data for the TEMPLATE MAKER
     // var monthsArray = ["Jan","Feb","Mar","April","May","June","July","Aug","Sept","Oct","Nov","Dec"];
 
@@ -84,7 +84,7 @@ module.exports = function(app) {
                 var blocks = result.rows;
           
 
-                return res.render('schedule-day.pug', {chairs: chairs, message: message, login: "Logout", blocks:blocks})
+                return res.render('template-build.pug', {chairs: chairs, message: message, login: "Logout", blocks:blocks})
               } // if result
           }) //dbClient
         }  // if result
