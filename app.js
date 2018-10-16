@@ -99,7 +99,12 @@ require('./routes/buyNow')(app);
 require('./routes/youserDash')(app);
 require('./routes/patientDash')(app);
 require('./routes/template-build')(app);
+require('./routes/template-build-delete-block')(app);
+require('./routes/template-build-repaint-blocks')(app);
 require('./routes/template-edit')(app);
+require('./routes/template-save-title')(app);
+require('./routes/template-save-blocks')(app);
+require('./routes/template-save-edit-name')(app);
 require('./routes/template-apply')(app);
 require('./routes/admin-template')(app);
 require('./routes/admin-template-react')(app);
@@ -109,6 +114,8 @@ require('./routes/admin-template-seq')(app);
 require('./routes/admin-template-seq-edit')(app);
 require('./routes/admin-template-day')(app);
 require('./routes/admin-template-day-edit')(app);
+
+///template-build/delete-block
 
 
 //config for the db connection
@@ -124,7 +131,13 @@ app.use('/public/', express.static(__dirname + '/public/'));
 //below sets up the html templating
 app.set('views','./views')
 app.set('view engine', 'pug')
+
 //below sets up sessions
+// NOTE: secret must be save in environment variable prior to production!!!!
+// NOTE: secret must be save in environment variable prior to production!!!!
+// NOTE: secret must be save in environment variable prior to production!!!!
+// NOTE: secret must be save in environment variable prior to production!!!!
+// NOTE: secret must be save in environment variable prior to production!!!!
 app.use(session({
     secret: '123',
     resave: true,

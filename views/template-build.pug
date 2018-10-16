@@ -1,132 +1,878 @@
-include base.html
+include base3.html
+head
+  include base4.html
+  link(rel=stylesheet type=text/css href="public/stylesheets/template-build.css")
+  script(src="/public/javascripts/jscolor.js")
 body
   include header.pug
   div(class="message2")= message
-  script(src="/public/javascripts/template-build.js")
+  
 
-  div(class="row" style="margin-left: 0px")
+  div(class="row noselect" style="margin-left: 0px")
     div(class="col-xs-10")
       h3= "Build/Edit Templates"
-  div(class="row" style="margin-left: 0px")
+  div(class="row noselect" style="margin-left: 0px")
     div(class="col-xs-6")
       h5= "Blocks"
       div(class="select-blocks")
-        ul(class="block-container list-group")
+        div(class="block-container")
           each x in blocks
-            //- Convert start_time millisecs to time format: "3:00PM"
-            - var hours = (x.start_time/3600000).toFixed(1).split(".")[0]
-            - var minutes = (x.start_time/3600000).toFixed(2).split(".")[1]
-            - minutes = Math.round(Number("0." + String(minutes)) * 60)
-            if hours > 12 
-              - hours = Number(hours) - 12
-              - var start = String(hours) + ":" + minutes + "PM"
-            else
-              - var start = String(hours) + ":" + minutes + "AM"
-
-            //- Convert end_time millisecs to time format: "3:00PM"
-            - var hours = (x.end_time/3600000).toFixed(1).split(".")[0]
-            - var minutes = (x.end_time/3600000).toFixed(2).split(".")[1]
-            - minutes = Math.round(Number("0." + String(minutes)) * 60)
-            if hours > 12 
-              - hours = Number(hours) - 12
-              - var end = String(hours) + ":" + minutes + "PM"
-            else
-              - var end = String(hours) + ":" + minutes + "AM"
-
-            div(class="block-item" id=x.id)
-              div(class="block" + x.id + " block-check" name="block-id" value="" + x.id)= x.name
-              div(class="block")= start + " to " + end
-
+            div(class="block-item-contain"  id=x.id)
+              div(class="block-item block-item-duration")= x.duration
+              div(class="block-item block-item-name")= x.name
+              div(class="block-item block-item-color")= x.color
+       
     div(class="col-xs-6")
       div(class="sequence-contain")
         h5= "Templates"
-        button(class="btn" class="backSeq")= "< Back"
 
-        button(style="margin-left: 5px" class="btn" class="nextSeq")= "Next >"
+        -var templateObject = {"templates":[]};
+        -var count = 0;
+
+        each x in templates
+          - templateObject.templates[count] = {"id": x.id, "name": x.name, "description": x.description, "color": x.color };
+          -count = count + 1;
+
+        button(class="btn" class="back_template")= "< Back"
+
+        button(style="margin-left: 5px" class="btn" class="next_template")= "Next >"
         
-        button(style="margin-top: 5px" class="btn" class="newSeq")= "New"
+        button(style="margin-top: 5px" class="btn" class="new_template")= "New"
 
-        button(style="margin-left: 5px; margin-top: 5px" class="btn" class="editSeq")= "Edit"
+        button(style="margin-left: 5px; margin-top: 5px" class="btn" class="edit_template")= "Edit Blocks"
+
         
-        input(style="margin-top: 5px" placeholder="Id" readonly type="text" class="id-seq form-control")
-        input(type="text" placeholder="Name" class="name-seq form-control")
+        div(class="color")="Select color:"
+          input(class="jscolor" value="")
         
-        input(type="text" placeholder="Description" class="description-seq form-control")
-        button(class="btn-primary save-seq")= "Save Template"
-        //-style="display:none"
+        input(style="margin-top: 5px" readonly type="text" class="id_template form-control" value=templateObject.templates[0].id)
+        input(type="text" placeholder="Name" readonly class="name_template form-control" value=templateObject.templates[0].name)
+        
+        input(type="text" readonly placeholder="Description" class="description_template form-control" value=templateObject.templates[0].description)
+        button(class="btn-primary save_template" style="display:none")= "Save Template"
+        button(class="btn-primary save_edits" style="display:none")= "Save Edits"
 
-
-  //- div(class="dropdown-hold")
-  //-   div(class="dropdown-contain")
-  //-     each x in blocks
-  //-       div(class="dropdown-option" id=x.id)= x.name
-  //-         div(class="name" style="display:none")=x.name
-  //-         div(class="start_time" style="display:none")=x.start_time
-  //-         div(class="end_time" style="display:none")=x.end_time
-//-div(class="chairs") 
-div(class="chair-contain")
-  div(class="chair-box lab")
-    div(class="lab2")
-  //- paint the chairs row at top
-  each x in chairs
-    div(class="chair-box lab " + x.name)
-      div(class="lab2")= x.name
-
-
-//- calculate how many total time intervals for a 17 hour day in the office
-- var timeSpan = (17 * 60)/5
-//- initialize y
-- var y =0
-//- the hour to no decimals..starting at 5:00AM
-- var hour = Number(5).toFixed(0)
-//- minutes to 0 decimal places
-- var min = Number(00).toFixed(0);
-
-//- convert time from minutes from 12:00AM=0 to Label time as '9:30'
-//- assume time begins at 12:00AM or zero seconds
-script
-  - var toLabel = function(sec) {
-  - var hours = Number(sec/60/60).toFixed(0).split(".")[0];
-  - var minutes = Number(sec/60/60).toFixed(2).split(".")[1]; }
-
-- console.log(toLabel(8*60*60));
-
-div(class="time-contain")
-  while y < timeSpan
-    - if (min < 10) // compensate for printing time as "8:0 AM" rather than "8:00 AM"
-      - bMin = "0" + String(min);
-      - var time = String(hour) + ":" + String(bMin) + "AM";
-    - else
-      - var time = String(hour) + ":" + String(min) + "AM";
-    //- paint the LEFT Hand div which contains the time label
-    div(class="time-label")= time
+div(class="chair-time-contain noselect")
+  div(class="chair-contain")
 
     each x in chairs
-      //- paint the divs under each chair colum
-      div(class="time-box")
-        div(id="hide" class= time)= time
-        div(id="hide" class= x.name)= x.name 
-    //- change name in db to numbers
+      div(class="chair-box lab " + x.name)
+        div(class="lab2")= x.name
 
-    - y=y+1 // increment the while loop
-    
-    //- User Number to prevent string coercions
-    //- Correct for base 60 counting in minutes
-    - if (Number(min) >= Number(55))// this is relavent only when counting by 5's...need to change to if >= to 59.98
-        - hour = Number(hour) + Number(1);// increment the hour
-        - min = Number(00).toFixed(0) // reset minutes to zero
-    - else
-        - min = Number(min) + Number(5) // increment the minutes again
-        - min = min.toFixed(0) // make sure it's the right decimal and string
-    //- correct HOURS for non-military time
-    - if (Number(hour) == 13)
-      - hour = Number(hour) - Number(12) 
+  -var minToLabel = function(min) {
+    -// if hours is toFixed(0) then it will round up after 30 minutes
+    -var hours = Number(min/60).toFixed(2).split(".")[0];
+    -var minutes = Number(Number(min/60).toFixed(3).split(".")[1]) / 1000 * 60;
+    - minutes = Math.round(minutes);
+    - // compensate for printing time as "8:0 AM" rather than "8:00 AM"
+    - if (Number(minutes) < 10) 
+      - minutes = "0" + String(minutes);
+
+    -var AMPM = "";
+
+    -if(hours < 1) {
+      -hours = "12";
+      -AMPM = "AM";
+      -return String(hours) + ":" + String(minutes) + String(AMPM);
+    -} 
+
+    -if(hours > 11 & hours < 13) {
+      -AMPM = "PM";
+      -return String(hours) + ":" + String(minutes) + String(AMPM);   
+    -}
+
+    -if(hours > 12) {
+      -hours = Number(hours) - 12;
+      -AMPM = "PM";
+      -return String(hours) + ":" + String(minutes) + String(AMPM);   
+    -}
+    -AMPM = "AM";
+    -return String(hours) + ":" + String(minutes) + String(AMPM);
+  -} //...minToLabel
+
+  //- calculate how many total time intervals for a 17 hour day in the office
+  - var timeSpan = (12 * 60)/5
+  //- initialize y
+  - var y =0
+  //- the hour to no decimals..starting at 7:00AM
+  - var hour = Number(7).toFixed(0)
+  //- minutes to 0 decimal places
+  - var min = Number(00).toFixed(0);
+  - var time_min = 420;
+  -console.log(timeSpan);
+
+  div(class="time-contain")
+    while time_min < 1140
+      div(class="time-box-row")
+        //- paint the divs under each chair colum
+        each x in chairs
+          -var uniqueClass = x.name + "_" + time_min; 
+          div(class="time-box " + uniqueClass)= x.name +"."+ minToLabel(time_min)
+
+      -time_min = time_min + 5 // increment the while loop
+      
+
+script.
+  // Get the value of templateObject from the PUG
+  var templateObject = !{JSON.stringify(templateObject)};
+  var tB_Object = {array: []};
+  // Create an object to store each BLOCK in a template where there will be multiple blocks added and subtracted before saving.
+  var blocksObject = {templated_blocks:[]};
+  var delete_block_flag = "";
+
+  var minToLabel = function(min) {
+    // if hours is toFixed(0) then it will round up after 30 minutes
+    var hours = Number(min/60).toFixed(2).split(".")[0];
+    var minutes = Number(Number(min/60).toFixed(3).split(".")[1]) / 1000 * 60;
+    minutes = Math.round(minutes);
+    // compensate for printing time as "8:0 AM" rather than "8:00 AM"
+    if (Number(minutes) < 10) {
+      minutes = "0" + String(minutes);
+    }
+
+    var AMPM = "";
+
+    if(hours < 1) {
+      hours = "12";
+      AMPM = "AM";
+      return String(hours) + ":" + String(minutes) + String(AMPM);
+    } 
+
+    if(hours > 11 & hours < 13) {
+      AMPM = "PM";
+      return String(hours) + ":" + String(minutes) + String(AMPM);   
+    }
+
+    if(hours > 12) {
+      hours = Number(hours) - 12;
+      AMPM = "PM";
+      return String(hours) + ":" + String(minutes) + String(AMPM);   
+    }
+    AMPM = "AM";
+    return String(hours) + ":" + String(minutes) + String(AMPM);
+  } //...minToLabel
 
 
 
 
+  // Must keep this here even though it does nothing
+  var drop = function() {
+    // do nothing
+  }
+  // Keep this outside the document.ready or else it's out of scope
+  var deleteTBlock = function(id) {
+        //alert("id= " + id);
+        // make ajax post
+        if(delete_block_flag == "edit_mode"){
+          $.ajax({
+            type:"POST",
+            url: "/template-build-delete-block?id=" + id, 
+            success: function(result){
+              console.log(result);
+              repaintTemplateBlocks();
+              } //...success
+          }) // ... ajax
 
+        } else {
+          alert("Select 'Edit' to make changes.");
+        }
+  };
+
+  var repaintTemplateBlocks = function() {
+    // Need to GET ALL TBs in one ROUNDTRIP and store in a GLOBAL
+
+    // Loop through EACH TEMPLATE and get all the TEMPLATE_IDs
+
+    // Submit all the IDs to the server and GET ALL TBs back.
+
+
+    // Clear out all the existing templated-blocks
+    clearTemplate_Blocks();
+    // get the value of the template inputs
+    var templateid = Number($(".id_template").val());
+
+
+
+    $.ajax({
+        type:"POST",
+        url: "/template-build-repaint-blocks?templateid=" + templateid, 
+        success: function(result){
+          // 
+          //console.log(JSON.stringify(result));// no stringify needed, gives the object
+          // Update the GLOBAL templateObject variable --> use this to toggle the views.
+          tB_Object = result;
+          //paintBlocks(result);
+        } //...success
+    }); // ... ajax
+  };
+
+  var clearTemplate_Blocks = function () {
+    var min = 420; // the start time
+    var stop_time = 1140;
+    //console.log("clearTemplate_Blocks ");
+
+    for(x=min ; x <= stop_time; x += 5){
+      // create a selector for the time-box element
+      for(y=1 ; y <= 15; y++){
+        var chair = y;
+        var selector = String(chair) + "_" + String(x);
+        //console.log("selector: " + selector);
+        // if it has any child elements, then it's already occupied by a Block so that choice is rejected
+        if($("." + selector).children().length > 0){
+          //console.log("clearTemplate_Blocks");
+          $("." + selector).children().remove();
+          $("." + selector).css('background-color','white');
+          $("." + selector).html(chair + "." + minToLabel(x));
+        }
+      }
+    }
+  }//...clearTemplate_Blocks
+
+  // Paint Blocks via data from the server ONLY
+  var paintBlocks = function(blocks) {
+    // iterate throught the blocks
+    // Need this data: stop_time, start time, chair, color,
+    //console.log("From paintBlocks: " + JSON.stringify(blocks));
+    //Loop through each of the templated-blocks and within that loop...
+    //console.log("paintBlocks");
+    // Loop through each block and paint it...
+    for(x = 0 ; x < blocks.array.length ; x++) {
+      //console.log("count Loops:" + x);
+      //console.log("length: " + blocks.array.length);
+      // setup all the data into variables
+      var min = Number(blocks.array[x].starttime);
+
+      // calculate the stop time for the block
+      var stop_time = Number(blocks.array[x].starttime) + Number(blocks.array2[x].duration);
+      var chair = String(blocks.array[x].chair);
+      var name = String(blocks.array2[x].name);
+      var block_id = Number(blocks.array[x].blockid);
+      var color = String(blocks.array2[x].color);
+      var template_id = Number(blocks.array[x].templateid);
+      var templateBlock_id = Number(blocks.array[x].id);
+
+      var selector = ""; // Use this in each for loop
+      // loop through all the candidate elements to learn whether any of them is already occupied by a Block
+      for(y=min ; y <= stop_time; y += 5){
+        // create a selector for the time-box element
+        selector = String(chair) + "_" + String(y);
+        // if it has any child elements, then it's already occupied by a Block so that choice is rejected
+        if($("." + selector).children().length > 0){
+          // if exists then stop !
+          //alert("At least one of your blocks overlaps another.")
+        }
+      }//...second for loop
+      // loop through all the candidate elements again and set the new properties to show that it's occupied by a block.
+      for(z=min ; z <= stop_time; z += 5) {
+        // create the selector for getting next element
+        selector = String(chair) + "_" + String(z);
+
+        // Paint the first label <strong> 
+        if(z == min){
+          var html0 = '<div><strong>' + String(chair) + '.' + String(name) + '.' + minToLabel(Number(z)) + '</strong></div>'
+        } else {
+          var html0 = '<div>' + String(chair) + '.' + String(name) + '.' + minToLabel(Number(z)) + '</div>'
+        }
+        // create html for the child elements of the target
+        var html = '<div id="blockid">' + block_id + '</div>' + 
+        '<div id="starttime">' + min + '</div>' + 
+        '<div id="chair">' + chair + '</div>' + '<div class="delete-block" id=' + templateBlock_id + ' onclick="deleteTBlock(this.id)">Delete block<div class="templateBlockid" style="display:none">' + templateBlock_id  + '</div></div>';
+
+        // add the elements to the target
+        $("." + selector).html(html0 + html);
+        // disable the element so that you can't drop on it.
+        //- if($("." + selector).droppable("option","disabled", true )) {
+        //-   $("." + selector).droppable( "option", "disabled", true );
+        //- }
+
+        $("." + selector).css('background-color', color);
+
+        $("." + selector).mouseover(function() {
+            //- var x = event.pageX;
+            //- var y = event.pageY;
+            $(this).find(".delete-block").css("top",y);
+            $(this).find(".delete-block").css("left",x);
+            $(this).find(".delete-block").show();
+        })
+
+        $("." + selector).mouseleave(function() {
+            $(this).find(".delete-block").hide();
+        })
+      }//...for loop
+    }//... main for loop
+
+    // Make the object available to larger scope
+    //tempBlocks.array = blocks.array;
+  }
+
+  var refresh_template_list = function(counter){
+    $(".id_template").val(templateObject.templates[counter].id);
+    $(".name_template").val(templateObject.templates[counter].name);
+    $(".description_template").val(templateObject.templates[counter].description);
+    $(".jscolor").val(templateObject.templates[counter].color);
+    $(".noselect").css("background-color", templateObject.templates[counter].color);
+
+  };
   
+
+
+
+  //**********************
+
+
+  $(document).ready(function() {
+    // below provides access to the "templateObject" object created in the pug code above. You gotta stringify it.
+
+    var reset_template_inputs = function(){
+    // change color and readonly and disable drop and drag
+      $(".block-item-contain").draggable({ disabled: true} );
+      $(".time-box").droppable({ disabled: true} );
+
+      $(".name_template").attr("readonly", true);
+      $(".description_template").attr("readonly", true);
+
+      $(".name_template").css('background-color','#f2f2f2');
+      $(".description_template").css('background-color','#f2f2f2');
+    }
+
+
+
+    
+    // updates the list of templates using the JSON callback from the "save template new" ajax post.
+    var refreshTemplates = function(newTemplates) {
+      // delete the old list first...templateObject is an object containing an array of objects called templates.
+      templateObject.templates =[];
+      // iterate the newTemplates object from the callback
+      Object.keys(newTemplates).forEach(function(key,index) {
+        // push each object onto the object/array
+        templateObject.templates.push(newTemplates[key]);
+      });
+    }
+
+    var counter = 0;
+
+    $(".next_template").click(function(){
+      // exit edit mode.
+      delete_block_flag = "";
+
+      if(counter >= templateObject.templates.length -1) {
+        counter = 0;
+      } else {
+        counter = counter + 1;
+      }
+      // reset the reset_template_inputs
+      reset_template_inputs();
+
+      refresh_template_list(counter);
+
+
+      repaintTemplateBlocks();
+    }) //...next_template
+
+   
+    var tempBlocks = {};
+    tempBlocks.array = [];
+
+
+
+    $(".back_template").click(function(){
+      // exit edit mode.
+      delete_block_flag = "";
+
+      if(counter <= 0) {
+        counter = templateObject.templates.length - 1;
+      } else {
+        counter = counter - 1;
+      }
+
+      // reset inputs
+      reset_template_inputs();
+
+      refresh_template_list(counter);
+
+      repaintTemplateBlocks();
+
+    }) //...back_template
+
+
+    //- $(document).ready(function() {
+    // ON CLICKING the NEW template button (NOT SAVE)
+    $(".new_template").click(function(){
+      
+      // go into new-template MODE
+
+      // turn off edit mode
+      delete_block_flag = "";
+
+      $(".save_template").show();
+      $(".color").show();
+
+      $(".save_template").click(function() {
+        save_template_new();
+      }) //...$(".save_template")
+
+      $(".jscolor").val("");
+
+      clearTemplate_Blocks();
+
+      clear_inputs();
+
+      inputs_on();
+
+      disableDragDrop();
+
+    
+    })//... click.new_template
+
+
+    $(".edit_template").click(function(){
+      // set the edit mode flag. This enables deleting a block from a template.
+      delete_block_flag = "edit_mode"
+      
+      inputs_on();
+
+      activateDragDrop();
+
+      onDropTemplate();
+
+      $(".save_edits").show();
+      $(".color").show();
+
+      $(".save_edits").click(function(){
+        save_template_edit();
+      });
+
+
+
+
+    })//... click.new_template
+
+    var activateDragDrop = function(){
+      console.log("activateDragDrop");
+      //Activate the grid drag and drop operations
+      $(".block-item-contain").draggable({
+        helper: "clone"
+      });
+
+      $(".time-box").droppable({
+        greedy: true,
+        hoverClass: "drop-hover",
+        tolerance: "pointer"
+      });
+
+      $(".block-item-contain").draggable({ disabled: false} );
+      $(".time-box").droppable({ disabled: false} );
+    } //... activate drag
+
+
+    var disableDragDrop = function(){
+      console.log("disableDragDrop");
+      //Activate the grid drag and drop operations
+      $(".block-item-contain").draggable({
+        helper: "clone"
+      });
+
+      $(".time-box").droppable({
+        greedy: true,
+        hoverClass: "drop-hover",
+        tolerance: "pointer"
+      });
+
+      $(".block-item-contain").draggable({ disabled: true} );
+      $(".time-box").droppable({ disabled: true} );
+    } //... activate drag
+
+    var inputs_off = function(){
+
+      $(".block-item-contain").draggable({ disabled: true} );
+      $(".time-box").droppable({ disabled: true} );
+
+      $(".name_template").attr("readonly", true);
+      $(".description_template").attr("readonly", true);
+
+      $(".name_template").css('background-color','#f2f2f2');
+      $(".description_template").css('background-color','#f2f2f2');
+    }
+
+    var inputs_on = function(){
+      // enable the inputs and turn them green;
+      $(".name_template").attr("readonly", false);
+      $(".description_template").attr("readonly", false);
+
+      //Highlight colors for grid, name and description
+      $(".name_template").css('background-color','#c6ecc6');
+      $(".description_template").css('background-color','#c6ecc6');
+      //show save button and activate listener
+      
+    } //... inputs_on
+
+    var clear_inputs = function(){
+      //clear the inputs
+      $(".id_template").val("");
+      $(".name_template").val("");
+      $(".description_template").val("");
+    } //... inputs_on
+
+    var save_template_edit = function() {
+      var edit_flag = "edit_flag";
+      return save_template_new(edit_flag);
+
+    } //...save_template_new
+
+
+    var save_template_new = function(edit_flag) {
+      // Is this an edit or a new
+      if(edit_flag == "edit_flag"){
+        // save as an edit and not a new
+        var ef = edit_flag;
+        var id = $(".id_template").val();
+
+        //console.log("ef = " + ef + " id = " + id);
+
+        if(id == "" || id == null || id == undefined) {
+          return alert("To edit there must be a Template ID.")
+        }
+      }
+
+      //console.log("ef = " + ef + " id = " + id);
+
+      var name = $(".name_template").val();
+      var description = $(".description_template").val();
+      var color = $(".jscolor").val();
+
+      // turn off edit mode.
+      delete_block_flag = "";
+
+      if(name == "" || name == null || name == undefined) {
+        return alert("Name and Description are required.");
+      }
+
+      inputs_off();
+
+      var url = "/template-save-title?name=" + name + "&description=" + description + "&id=" + id + "&edit_flag=" + ef + "&color=" + color;
+
+      //$(".color").hide();
+      $(".save_template").hide();
+      $(".save_edits").hide();
+      
+
+      $.ajax({
+          type:"POST",
+          url: url, 
+          success: function(result){
+            // refresh the templateObject so that it has the new template that you just created.
+            refreshTemplates(result);
+            // update the fields in the Templates view
+            clear_inputs();
+            repaintTemplateBlocks();
+            console.log("From Ajax success");
+            // exit the save_template_new MODE
+            
+          } //...success
+      }) // ... ajax
+    } //...save_template_new
+
+    var onDropTemplate = function(){
+      // ******MUST keep these inside the document ready function  
+      // set event listener for the drop event
+      $( ".time-box" ).on( "drop", function( event, ui ) {
+          //this = the target element
+          //get the start-time (in minutes from mid-night) from the drop target
+          var getMin = function(element){ 
+            var min = String($(element).text());
+            var hour = $(element).text();
+
+            hour = hour.split(":")[0].split(".")[1];
+            hour = Number(hour) * 60;
+            
+            min = min.split(":")[1];// = 00PM
+            min = Number(min[0] + min[1]);// final
+
+            return Number(hour + min);
+          }       
+
+          // get the chair from the drop target
+          var getChair = function(element){
+            var chair = $(element).text();
+
+            return chair = chair.split(".")[0];
+          }
+
+          var min = Number(getMin(this)); // this is the starttime
+          var chair = getChair(this);
+
+          if(min == NaN || min == null || min == undefined || min == ""){
+            return
+          };
+
+          console.log("This from onDropTemplate: min= " + min);
+
+          // get the Id of the block (draggable)
+          var block_id = ui.draggable.attr('id');
+
+          // so, then get the duration, name and color of the draggable block
+          var block_duration = ui.draggable.find(".block-item-duration").text();
+          var block_name = ui.draggable.find(".block-item-name").text();
+          var color = ui.draggable.find(".block-item-color").text();
+          var template_ID = Number($(".id_template").val());
+
+          // Create the object to store the TEMPLATE-BLOCK table data:
+          // Need: blockid, templateid, start-time, chair
+          var templated_Block = {};
+          templated_Block.start_time = Number(min);
+          templated_Block.block_id = Number(block_id);
+          templated_Block.chair_id = Number(chair);
+          templated_Block.template_id = Number(template_ID);
+          templated_Block.color = String(color);
+
+
+          var stop_time = min + Number(block_duration);
+          // loop through all the candidate elements to learn whether any of them is already occupied by a Block
+          for(x=min ; x <= stop_time; x += 5){
+            // create a selector for the time-box element
+            var selector = String(chair) + "_" + String(x);
+            // if it has any child elements, then it's already occupied by a Block so that choice is rejected
+            if($("." + selector).children().length > 0){
+              // if exists then stop !
+              return alert("Sorry. That spot is already occupied.")
+            }
+          }
+
+
+          $.ajax({
+              type:"POST",
+              url: "/template-save-blocks",
+              dataType: 'json',
+              data: templated_Block, 
+              success: function(result){
+                console.log("The server says: " + result);
+              } //...success2
+          }) // ... ajax2
+
+
+          // disable the droppable after it accepts a block
+          $(this).droppable( "option", "disabled", true );
+
+          // use these in the for loop below
+          var selector = "";
+
+          // loop through all the candidate elements again and set the new properties to show that it's occupied by a block.
+          for(x=min ; x <= stop_time; x += 5) {
+            // create the selector for getting next element
+            selector = String(chair) + "_" + String(x); 
+            // convert "minutes from midnight" to a time label
+                    // Paint the first label <strong> 
+            if(x == min){
+              var html0 = '<div><strong>' + String(chair) + '.' + String(block_name) + '.' + minToLabel(Number(x)) + '</strong></div>'
+            } else {
+              var html0 = '<div>' + String(chair) + '.' + String(block_name) + '.' + minToLabel(Number(x)) + '</div>'
+            }
+            // Now do the work element
+            // create html for the child element of drop target
+            var html = 
+            '<div id="blockid">' + block_id + '</div>' + 
+            '<div id="starttime">' + min + '</div>' + 
+            '<div id="chair">' + chair + '</div>' +
+            '<div id="color">' + color + '</div>';
+
+            // modify the element
+            $("." + selector).html(html0 + html);
+            $("." + selector).droppable( "option", "disabled", true );
+            $("." + selector).css('background-color', color);
+          }
+
+      }) //...on.drop $(.time-box)
+    }//... onDropTemplate()
+
+    //- var DeleteBlock = function(){
+    //-   // ******MUST keep these inside the document ready function  
+    //-   // set event listener for the drop event
+    //-   $( ".time-box" ).on( "drop", function( event, ui ) {
+    //-       //this = the target element
+
+
+    //-       // Create the object to store the BLOCK data as a template entry
+    //-       // blockid, templateid, start time, chair
+    //-       var templated_Block = {};
+
+    //-       //get the start-time (in minutes from mid-night) from the drop target
+    //-       var getMin = function(element){ 
+    //-         var min = $(element).text();
+    //-         var hour = $(element).text();
+    //-         console.log("min = " + min);
+    //-         console.log("hour = " + hour);
+
+    //-         hour = hour.split(":")[0].split(".")[1];
+    //-         hour = Number(hour) * 60;
+
+    //-         console.log(min.split(":")[1]);
+
+    //-         min = min.split(":")[1];// = 00PM
+    //-         min = Number(min[0] + min[1]);// final
+    //-         return hour + min;
+    //-       }       
+    //-       // get the chair from the drop target
+    //-       var getChair = function(element){
+    //-         var chair = $(element).text();
+    //-         return chair = chair.split(".")[0];
+    //-       }
+
+    //-       var min = getMin(this); // min is the starttime
+    //-       var chair = getChair(this);
+
+    //-       //console.log("MIN = " + min + " and chain = " + chair);
+
+    //-       // get the Id of the block (draggable)
+    //-       var block_id = ui.draggable.attr('id');
+
+    //-       // so, then get the duration, name and color of the draggable block
+    //-       var block_duration = ui.draggable.find(".block-item-duration").text();
+    //-       var block_name = ui.draggable.find(".block-item-name").text();
+    //-       var block_color = ui.draggable.find(".block-item-color").text();
+    //-       var template_ID = Number($(".id_template").val());
+    //-       // Create the object to store the TEMPLATE-BLOCK table data:
+    //-       // Need: blockid, templateid, start-time, chair
+    //-       var templated_Block = {};
+    //-       templated_Block.start_time = Number(min);
+    //-       templated_Block.block_id = Number(block_id);
+    //-       templated_Block.chair_id = Number(chair);
+    //-       templated_Block.template_id = Number(template_ID);
+
+    //-       var url = "/template-save-blocks";
+
+    //-       $.ajax({
+    //-           type:"POST",
+    //-           url: url,
+    //-           dataType: 'json',
+    //-           data: templated_Block, 
+    //-           success: function(result){
+    //-             alert("Saved part 2 successfully");
+    //-             //console.log(JSON.stringify(result));
+                
+    //-           } //...success2
+    //-       }) // ... ajax2
+
+    //-       // the time in minutes from midnight when the block ends
+    //-       var stop_time = min + Number(block_duration);
+
+    //-       // loop through all the candidate elements to learn whether any of them is already occupied by a Block
+    //-       for(x=min ; x <= stop_time; x += 5){
+    //-         // create a selector for the time-box element
+    //-         var selector = String(chair) + "_" + String(x);
+    //-         //console.log(selector);
+    //-         // if it has any child elements, then it's already occupied by a Block so that choice is rejected
+    //-         if($("." + selector).children().length > 0){
+    //-           // if exists then stop !
+    //-           return alert("Sorry. That spot is occupied.")
+    //-         }
+    //-       }
+
+    //-       // disable the droppable after it accepts a block
+    //-       $(this).droppable( "option", "disabled", true );
+
+    //-       // loop through all the candidate elements again and set the new properties to show that it's occupied by a block.
+    //-       for(x=min ; x <= stop_time; x += 5){
+    //-           // create the selector for getting next element
+    //-           var selector = String(chair) + "_" + String(x); 
+    //-           // Now do the work
+    //-           // create html for the child element of the drop target
+    //-           var html = '<div id="' + String(block_id) + '">' + block_name + '</div>';
+    //-           // modify the element
+    //-           $("." + selector).html(html);
+    //-           $("." + selector).droppable( "option", "disabled", true );
+    //-           $("." + selector).css('background-color', block_color);
+    //-       }
+    //-   }) //...on.drop $(.time-box)
+    //- }//...delete()
+
+
+
+
+
+
+    //- // convert "minutes from midnight" to a time label:
+    //- var minToLabel = function(min) {
+    //-   var hours = Number(min/60).toFixed(0);
+    //-   //- console.log("hours: " + hours);
+    //-   var minutes = Number(min/60).toFixed(2).split(".")[1];
+    //-   minutes = ((minutes/100).toFixed(2) * 60).toFixed(0); 
+    //-   //- console.log("minutes: " + minutes);
+    //-   var AMPM = "";
+    //-   //console.log("minToLabel says: " + String(hours) + ":" + String(minutes))
+    //-   //console.log(String(hours) + ":" + String(minutes));
+    //-   if(Number(hours) < 1) {
+    //-     hours = "12";
+    //-     AMPM = "AM";
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);
+    //-   } 
+
+    //-   if(Number(hours) > 11 & Number(hours) < 13) {
+    //-     AMPM = "PM";
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);   
+    //-   }
+
+    //-   if(Number(hours) > 12) {
+    //-     hours = String(Number(hours) - 12);
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);   
+    //-   } else {
+    //-     AMPM = "AM"
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);
+    //-   }
+    //- }
+
+
+
+    //- var toMilitary = function(millisec) {
+    //-   var hours = Number(millisec/1000/60/60).toFixed(0);
+    //-   var minutes = Number(millisec/1000/60/60).toFixed(2).split(".")[1]; 
+    //-   //console.log(String(hours) + ":" + String(minutes));
+    //-   return String(hours) + ":" + String(minutes);
+    //- }
+
+    //- var labelToMilli = function(label){
+    //-   var array = String(label).split(":")[1].split("");
+    //-   while(array.length > 2) {
+    //-     array.pop();
+    //-   }
+    //-   var minutes = array.join("");
+
+    //-   var hour = Number(label.split(":")[0]);
+    //-   var millisec = (hour * 60 * 60 * 1000) + (minutes * 60 * 1000);
+    //-   //console.log(millisec);
+
+    //-   return millisec;
+    //- }
+
+    //- var militaryTo12 = function(timeLabel) {
+    //-   //converts 24 hour militart time to AMPM
+    //-   var hours = timeLabel.split(":")[0];
+    //-   var minutes = timeLabel.split(":")[1];
+    //-   var AMPM = "";
+
+    //-   if(hours < 1) {
+    //-     hours = "12";
+    //-     AMPM = "AM";
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);
+    //-   } 
+
+    //-   if(hours > 11 & hours < 13) {
+    //-     AMPM = "PM";
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);   
+    //-   }
+
+    //-   if(hours > 12) {
+    //-     hours = Number(hours) - 12;
+    //-     return String(hours) + ":" + String(minutes) + String(AMPM);   
+    //-   }
+    //- } //militaryTo12
+    //activateDragDrop();
+
+    //onDropTemplate();
+
+    //repaintTemplateBlocks();
+  }) //...document.ready
+
+  //repaintTemplateBlocks();
 
   
 

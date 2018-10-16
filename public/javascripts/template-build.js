@@ -1,22 +1,217 @@
-// change again and again
+
+// Must keep this here even though it does noting
+var drop = function() {
+  // do nothing
+}
+
 $(document).ready(function() {
 
-  // // get to the current date of MONTH to determine which month to display
-  // var dayOfMonth = new Date().getDate()
+  $(".new_template").click(function(){
+    // go into new-template MODE
 
-  // // populate the calendar DAYS with the dayOfMonth number
+    //activateDragDrop();
 
-  // // get current day
-  // var year = Number(new Date().getFullYear()); // returns 2017
-  // var monthIndex = new Date().getMonth(); // returns 0-11
-  // var dayMonthToday = new Date().getDate(); // returns 0-31
+    clear_inputs();
 
-  // var monthsArray = ["Jan","Feb","Mar","April","May","June","July","Aug","Sept","Oct","Nov","Dec"];
+    inputs_on();
+
+    //onDropTemplate();
+  
+  })//... click.new_template
+
+  $(".edit_template").click(function(){
+    // go into new-template MODE
+
+    activateDragDrop();
+
+    inputs_on();
+
+    onDropTemplate();
+  
+  })//... click.new_template
+
+  var activateDragDrop = function(){
+    console.log("activateDragDrop");
+    //Activate the grid drag and drop operations
+    $(".block-item").draggable({
+      helper: "clone"
+    });
+
+    $(".time-box").droppable({
+      greedy: true,
+      hoverClass: "drop-hover",
+      tolerance: "pointer"
+    });
+
+    $(".block-item").draggable({ disabled: false} );
+    $(".time-box").droppable({ disabled: false} );
+  } //... activate drag
+
+  var inputs_off = function(){
+
+    $(".block-item").draggable({ disabled: true} );
+    $(".time-box").droppable({ disabled: true} );
+
+    $(".name_template").attr("readonly", true);
+    $(".description_template").attr("readonly", true);
+
+    $(".name_template").css('background-color','#f2f2f2');
+    $(".description_template").css('background-color','#f2f2f2');
+  }
+
+  var inputs_on = function(){
+    // enable the inputs and turn them green;
+    $(".name_template").attr("readonly", false);
+    $(".description_template").attr("readonly", false);
+
+    //Highlight colors for grid, name and description
+    $(".name_template").css('background-color','#c6ecc6');
+    $(".description_template").css('background-color','#c6ecc6');
+    //show save button and activate listener
+    $(".save_template").show();
+    $(".save_template").click(function() {
+      save_template_new();
+    }) //...$(".save_template")
+  } //... inputs_on
+
+  var clear_inputs = function(){
+    //clear the inputs
+    $(".id_template").val("");
+    $(".name_template").val("");
+    $(".description_template").val("");
+  } //... inputs_on
+
+  var save_template_edit = function() {
+
+    // get all the block info from the grid
+
+
+
+    // blockID, time, chair, templateID
+    // CREATE TABLE templateblock (
+    //   id SERIAL PRIMARY KEY,
+    //   blockid INTEGER REFERENCES block,
+    //   templateid INTEGER REFERENCES template,
+    //   startTime INTEGER,
+    //   chair INTEGER REFERENCES chair
+    // );
+
+
+    inputs_off();
+    //var url = "/template-save?name=" + name + "&description=" + description;
+    // $.ajax({
+    //     url: url, 
+    //     success: function(result){
+    //       alert(result);
+    //       // disable the drag and drop operations
+    //       $(".block-item").draggable({ disabled: true} );
+    //       $(".time-box").drappable({ disabled: true} );
+    //     } //...success
+    // }) // ... ajax
+  } //...save_template_new
+
+
+  var save_template_new = function() {
+    //var id = $(".id-template").value();
+    var name = $(".name_template").val();
+    var description = $(".description_template").val();
+
+    if(name == "" || name == null || name == undefined) {
+      return alert("Name and Description are required.");
+    }
+
+    inputs_off();
+
+    var url = "/template-save?name=" + name + "&description=" + description;
+    $.ajax({
+        type:"POST",
+        url: url, 
+        success: function(result){
+          alert("Saved success");
+
+        } //...success
+    }) // ... ajax
+  } //...save_template_new
+
+  var onDropTemplate = function(){
+    // ******MUST keep these inside the document ready function  
+    // set event listener for the drop event
+    $( ".time-box" ).on( "drop", function( event, ui ) {
+        //this = the target element
+
+        //get the start-time (mins) from the drop target
+        var getMin = function(element){ 
+          var min = $(element).text();
+          var hour = $(element).text();
+
+          hour = hour.split(":")[0].split(".")[1];
+          hour = Number(hour) * 60;
+          //console.log("hour= " + hour);
+          min = min.split(":")[1];// = 00PM
+          min = Number(min[0] + min[1]);// final
+          return hour + min;
+        }       
+        // get the chair from the drop target
+        var getChair = function(element){
+          var chair = $(element).text();
+          return chair = chair.split(".")[0];
+        }
+
+        var min = getMin(this);
+        var chair = getChair(this);
+
+        // get the Id of the block (draggable)
+        var block_id = ui.draggable.attr('id');
+        var text_of_block = ui.draggable.text();
+        // the above gets the ":" delimited text "45:Adjustment:#ffff00"
+
+        // so, then get the first part (the 45)
+        var block_duration = Number(text_of_block.split(":")[0]);
+        // so, then get the second part (the name)
+        var block_name = text_of_block.split(":")[1];
+        // so, then get the third part (the color)
+        var block_color = text_of_block.split(":")[2];
+        //Get the next element at 5 mins later
+        //loop through the elements
+        var stop_time = min + block_duration;
+        //first check that all elements are free to accept a block
+        // check if child element exists with id = block_id
+        // loop through all the candidate elements
+        for(x=min ; x <= stop_time; x += 5){
+          // create a selector for the time-box element
+          var selector = String(chair) + "_" + String(x);
+          // if it has any child elements, then it's already taken
+          if($("." + selector).children().length > 0){
+            // if exists then stop !
+            return alert("Sorry. That's already taken.")
+          }
+        }
+
+        // disable the droppable after it accepts a block
+        $(this).droppable( "option", "disabled", true );
+        // Insert the text of the draggable into the droppable
+        $(this).append(ui.draggable.text())
+
+        // loop through all the candidate elements again
+        for(x=min ; x <= stop_time; x += 5){
+            // create the selector for getting next element
+            var selector = String(chair) + "_" + String(x); 
+            // Now do the work element
+            // create html for the child element of drop target
+            var html = '<div id="' + String(block_id) + '">' + block_name + '</div>';
+            // modify the element
+            $("." + selector).html(html);
+            $("." + selector).droppable( "option", "disabled", true );
+            $("." + selector).css('background-color', block_color);
+        }
+      }) //...on.drop $(.time-box)
+  }
+
 
   var toMilitary = function(millisec) {
     var hours = Number(millisec/1000/60/60).toFixed(0);
     var minutes = Number(millisec/1000/60/60).toFixed(2).split(".")[1]; 
-    console.log(String(hours) + ":" + String(minutes));
+    //console.log(String(hours) + ":" + String(minutes));
     return String(hours) + ":" + String(minutes);
   }
 
@@ -29,182 +224,35 @@ $(document).ready(function() {
 
     var hour = Number(label.split(":")[0]);
     var millisec = (hour * 60 * 60 * 1000) + (minutes * 60 * 1000);
-    console.log(millisec);
+    //console.log(millisec);
 
     return millisec;
   }
 
   var militaryTo12 = function(timeLabel) {
     //converts 24 hour militart time to AMPM
+    var hours = timeLabel.split(":")[0];
+    var minutes = timeLabel.split(":")[1];
+    var AMPM = "";
 
-    // if the hour number is greater than 12, then subtract 12
-    if(Number(timeLabel.split(":")[0]) > 11) {
-      var newLabel = timeLabel + "PM";
-      // if it's greater than 11, then make it PM else AM
-      if(Number(timeLabel.split(":")[0]) > 12){
-        var newHour = Number(timeLabel.split(":")[0]) - 12;
-        newLabel = String(newHour) + ":" + String(timeLabel.split(":")[1]) + "PM";
-        return newLabel;
-      } else { // if greater than 11 only
-        return newLabel;
-      } // end second if
-    } else { // for first if ..nothing happens except adding AM
-      return timeLabel + "AM";
-    }
-  }
+    if(hours < 1) {
+      hours = "12";
+      AMPM = "AM";
+      return String(hours) + ":" + String(minutes) + String(AMPM);
+    } 
 
-  var time1 = 1200000;//"12:00";
-  //var time2 = "3:20PMhjk";
-  console.log(militaryTo12(toMilitary(time1)));
-  //console.log(labelToMilli(time2));
-
-var firstClick = "";
-var toggle = false;
-
-  $(".time-box").click(function(){
-
-    if (toggle === true) {
-      ClearDropDown();
+    if(hours > 11 & hours < 13) {
+      AMPM = "PM";
+      return String(hours) + ":" + String(minutes) + String(AMPM);   
     }
 
-    toggle = true;
-    firstClick = this;
-    $(".time-box").css("background-color", "white");
-    $(this).css("background-color", "yellow");
-    // In app.get, get the list of blocks from the database.
-    // Use pug to put them into the view with display: none
-    // then access that div via jquery to show/hide
-    // get the dropdown container
-    $(".dropdown-contain").appendTo(this);
-    $(".dropdown-contain").css("display","block");
-  }) // time-box click
+    if(hours > 12) {
+      hours = Number(hours) - 12;
+      return String(hours) + ":" + String(minutes) + String(AMPM);   
+    }
+  } //militaryTo12
 
-  $(".dropdown-option").click(function(event) {
-    // get the block id (the Blockid in the DB) from the pugView
-    var id = event.target.id;//the id of the option/element clicked
-    console.log("The id of the Block is: " + id);
-
-    //get the time and chair values from the time-box
-    var classList = $(firstClick).attr('class').split(" ");
-    console.log("The class list is: " + classList);
-
-    ClearDropDown();
-
-    // add the Block to the template
-    // get the Block info from the dropdown-option class
-    var start_time = $(this).find(':nth-child(2)').html();
-    var end_time = $(this).find(':nth-child(3)').html();
-
-    console.log(id + " " + start_time + " " + end_time);
-
-    //convert millisec to hours
-    startHour = start_time /1000/60/60;
-    startHour = startHour.toFixed(0); // convert number to a string and keeping specified number of decimals i.e. 7.08333 --> 7
-
-    startMin = start_time/1000/60;
-
-    start_time = startHour + "." + startMin;
-
-    console.log(start_time);
-
-  })
-
-
-var ClearDropDown = function() {
-  setTimeout(function(){ 
-    console.log("Hey this is ClearDropDown");
-    $(".dropdown-contain").appendTo(".dropdown-hold");
-    $(".dropdown-contain").css("display","none");
-    $(".time-box").css("background-color", "white");
-    toggle = false;
-
-  }, 0000);
-  
-}
+}) //...document.ready
 
 
 
-
-
-
-  // Create dropdown menu when user clicks on a box
-  // first, click on any box with the "time-box" class
-  // $(".time-box").click(function() {
-  //   get the coordinates of the click
-  //   var x = event.clientX;
-  //   var y = event.clientY;
-  //   console.log("X coordinate = " + x + ", " + "X coordinate = " + y);
-
-  //   //get an array list of the classes on the clicked box
-  //   var classArray = $(this).attr('class').split(" ");
-  //   console.log(classArray);
-  //   console.log("The time label is: " + classArray[0]);
-  //   console.log("The chair label is: " + classArray[1]);
-  //   //get the dropdown element and change css for position and visibility
-  //   $(".dropdown").css("position","absolute");
-  //   $(".dropdown").css("left",x);
-  //   $(".dropdown").css("top",y);
-  //   $(".dropdown").css("display","block");
-
-  // }) // DropDown menu
-
-
-// on click --> insert select drop down and activate
-
-
-
-
-  // given the month (0-11) and year (2017) repaint the calendar
-  var renderDay = function(date) {
-    var d = new Date(date)
-    $(".month").html(d);
-
-  }
-
-  // Now set the listeners for the SHIFT back and forward
-  $(".shiftback").click(function() {
-    // get the month from the title
-    var monthView = $(".title").html();
-    var year = Number($(".year").html());
-    var day = Number($(".day").html())
-
-    monthsArray.forEach(function(x, monthIndex){
-      if(x === monthView){
-        // increment the months
-        monthIndex = monthIndex - 1;
-        if(monthIndex === -1) {
-          monthIndex = 11;
-          year = year - 1;
-        }
-      } 
-    })
-  }) // shiftback
-
-  // Now set the listeners for the SHIFT back and forward
-  $(".shiftforward").click(function() {
-    // get the date
-    console.log("Shift forward")
-    var d = Date.parse($(".title").val())
-    // increment the date
-    console.log(d);
-    d.setDate(d.getDate() + 1);
-
-    // repaint with new date
-    renderDay(d);
-    
-  }) // shift forward
-
- 
-  $(".showDay").click(function(event){
-    var year = $(this).find(".boxyear").text();
-    var day = $(this).find(".boxday").text();
-    var month = $(this).find(".boxmonth").text();
-    console.log("The day is: " + month + day + year);
-
-    //post request to /schedule/day
-
-  })
-  
-
-
-});

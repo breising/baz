@@ -22,7 +22,7 @@ drop table message cascade;
 drop table inventory cascade;
 drop table patient cascade;
 drop table parent cascade;
-drop table appointment cascade;
+--drop table appointment cascade;
 drop table code cascade;
 drop table status cascade;
 drop table template cascade;
@@ -32,6 +32,7 @@ drop table block cascade;
 drop table schedule cascade;
 drop table sequence cascade;
 drop table day cascade;
+drop table templateblock cascade;
 -- drop table buyerreview cascade;
 -- drop table sellerreview cascade;
 -- drop table itemreview cascade;
@@ -96,7 +97,9 @@ CREATE TABLE code (
   id SERIAL PRIMARY KEY,
   name varchar(255),
   description varchar(255),
-  duration INTEGER
+  duration INTEGER,
+  active varchar,
+  color varchar
 );
 
 CREATE TABLE appointment (
@@ -116,19 +119,6 @@ CREATE TABLE status (
   description varchar(255)
 );
 
-CREATE TABLE template (
-  id SERIAL PRIMARY KEY,
-  name varchar(255),
-  description varchar(255),
-  template JSON
-);
-
-CREATE TABLE appliedtemplate (
-  id SERIAL PRIMARY KEY,
-  templateid INTEGER REFERENCES template,
-  day TIMESTAMPTZ
-);
-
 CREATE TABLE chair (
   id SERIAL PRIMARY KEY,
   name varchar(255),
@@ -139,10 +129,39 @@ CREATE TABLE block (
   id SERIAL PRIMARY KEY,
   name varchar,
   description varchar,
-  start_time INTEGER,
-  end_time INTEGER,
   duration INTEGER,
-  proc_codes JSON
+  active varchar,
+  color varchar
+);
+
+CREATE TABLE codeblock (
+  id SERIAL PRIMARY KEY,
+  blockid INTEGER REFERENCES block,
+  codeid INTEGER REFERENCES code
+);
+
+CREATE TABLE template (
+  id SERIAL PRIMARY KEY,
+  name varchar(255),
+  description varchar(255),
+  active varchar(255),
+  color varchar
+);
+
+CREATE TABLE templateblock (
+  id SERIAL PRIMARY KEY,
+  blockid INTEGER REFERENCES block,
+  templateid INTEGER REFERENCES template,
+  starttime INTEGER,
+  chair INTEGER REFERENCES chair,
+  color varchar
+);
+
+
+CREATE TABLE appliedtemplate (
+  id SERIAL PRIMARY KEY,
+  templateid INTEGER REFERENCES template,
+  day TIMESTAMPTZ
 );
 
 CREATE TABLE sequence (
@@ -150,13 +169,6 @@ CREATE TABLE sequence (
   name varchar,
   description varchar,
   blocks JSON
-);
-
-CREATE TABLE template (
-  id SERIAL PRIMARY KEY,
-  name varchar,
-  description varchar,
-  day varchar
 );
 
 CREATE TABLE day (
@@ -177,6 +189,9 @@ CREATE TABLE schedule (
   patientid INTEGER
 );
 
+CREATE TABLE sessions (
+  id SERIAL PRIMARY KEY
+);
 
 INSERT INTO youser(email,password) VALUES('Reising@Orthodontics','bcr0072');
 INSERT INTO youser(email,password) VALUES('a@','a');
@@ -221,6 +236,17 @@ INSERT INTO code(name, description,duration) VALUES('debond long','Debond: comp2
 
 
 
+INSERT INTO block(name, description, duration, color) VALUES('Adjustment','Regular adjustment',45,'#ffff00');
+INSERT INTO block(name, description, duration, color) VALUES('Bonding','Full 2 arch bonding',90,'#00cc66');
+INSERT INTO block(name, description, duration, color) VALUES('Consultation','New patient consult/exam',30,'#3399ff');
+
+INSERT INTO template(name, description, active, color) VALUES('Mondays','Template for Mondays','true','3399ff');
+INSERT INTO template(name, description, active, color) VALUES('Tues/Thurs','Template for Tuesdays and Thursdays','true','00cc66');
+INSERT INTO template(name, description, active, color) VALUES('Fridays','Template for Fridays','true','ffff00');
+
+
+
+
 INSERT INTO status(name, description) VALUES('New Patient','Consultation not completed');
 INSERT INTO status(name, description) VALUES('Limbo','Consult completed but not completed appliance delivery appointment.');
 INSERT INTO status(name, description) VALUES('Comp1','In treatment comprehensive one arch.');
@@ -250,31 +276,31 @@ INSERT INTO chair(name) VALUES('12');
 INSERT INTO chair(name) VALUES('13');
 INSERT INTO chair(name) VALUES('14');
 INSERT INTO chair(name) VALUES('15');
-INSERT INTO chair(name) VALUES('16');
-INSERT INTO chair(name) VALUES('17');
-INSERT INTO chair(name) VALUES('18');
-INSERT INTO chair(name) VALUES('19');
-INSERT INTO chair(name) VALUES('20');
-INSERT INTO chair(name) VALUES('21');
-INSERT INTO chair(name) VALUES('22');
-INSERT INTO chair(name) VALUES('23');
-INSERT INTO chair(name) VALUES('24');
-INSERT INTO chair(name) VALUES('25');
-INSERT INTO chair(name) VALUES('26');
-INSERT INTO chair(name) VALUES('27');
-INSERT INTO chair(name) VALUES('28');
-INSERT INTO chair(name) VALUES('29');
-INSERT INTO chair(name) VALUES('30');
-INSERT INTO chair(name) VALUES('31');
-INSERT INTO chair(name) VALUES('32');
-INSERT INTO chair(name) VALUES('33');
-INSERT INTO chair(name) VALUES('34');
-INSERT INTO chair(name) VALUES('35');
-INSERT INTO chair(name) VALUES('36');
-INSERT INTO chair(name) VALUES('37');
-INSERT INTO chair(name) VALUES('38');
-INSERT INTO chair(name) VALUES('39');
-INSERT INTO chair(name) VALUES('40');
+-- INSERT INTO chair(name) VALUES('16');
+-- INSERT INTO chair(name) VALUES('17');
+-- INSERT INTO chair(name) VALUES('18');
+-- INSERT INTO chair(name) VALUES('19');
+-- INSERT INTO chair(name) VALUES('20');
+-- INSERT INTO chair(name) VALUES('21');
+-- INSERT INTO chair(name) VALUES('22');
+-- INSERT INTO chair(name) VALUES('23');
+-- INSERT INTO chair(name) VALUES('24');
+-- INSERT INTO chair(name) VALUES('25');
+-- INSERT INTO chair(name) VALUES('26');
+-- INSERT INTO chair(name) VALUES('27');
+-- INSERT INTO chair(name) VALUES('28');
+-- INSERT INTO chair(name) VALUES('29');
+-- INSERT INTO chair(name) VALUES('30');
+-- INSERT INTO chair(name) VALUES('31');
+-- INSERT INTO chair(name) VALUES('32');
+-- INSERT INTO chair(name) VALUES('33');
+-- INSERT INTO chair(name) VALUES('34');
+-- INSERT INTO chair(name) VALUES('35');
+-- INSERT INTO chair(name) VALUES('36');
+-- INSERT INTO chair(name) VALUES('37');
+-- INSERT INTO chair(name) VALUES('38');
+-- INSERT INTO chair(name) VALUES('39');
+-- INSERT INTO chair(name) VALUES('40');
 
 
 

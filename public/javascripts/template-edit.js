@@ -9,7 +9,7 @@ $(document).ready(function() {
   // ******MUST keep these inside the document ready function  
   // set up the draggable template-item and droppable calendar item.
   var tempDroppable = "";
-
+  
   $( ".template-item" ).draggable({
     helper: "clone"
 
@@ -20,8 +20,6 @@ $(document).ready(function() {
     tolerance: "pointer",
  
   });
-  
-
 
 
   // ******MUST keep these inside the document ready function  

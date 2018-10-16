@@ -26,7 +26,7 @@ module.exports = function(app) {
   var pool = new pg.Pool(config)
   var dbClient = ''
 
-  app.get('/template-save', function (req, res) {
+  app.get('/template-apply', function (req, res) {
     // get query string
     if(req.query.message){
       var message = req.query.message

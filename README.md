@@ -14,7 +14,9 @@ To access the vagrant environment:
 - cd /
 - then "cd vagrant" to access the mirrored project folder
 
-- to run the app: "node app.js"
+### to run the app: 
+- "node app.js"
+- open a browser window and nav to: 127.0.0.1:3000
 
 - to logout of the vagrant environement -->  ctrl-d
 - vagrant ssh to get back in and then you must cd / then,
@@ -37,3 +39,33 @@ To access the vagrant environment:
 -- start entering sql statements
 
 -- baz=# selct * from blocks;
+
+
+###Git:
+to do a commit:
+"git add -A" to add all changed files to the staging area
+"git status" to view the stage area.
+"git commit" to commit to the repo.
+"git push origin master" to push your changes to git hub.
+
+
+###User authentication system:
+- Model: server-side 
+- Use npm module 'connect-pg-simple' to leverage the Postgres database as the datastore for express-sessions.
+- User passwords hashed, protected by bcrypt or newer version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

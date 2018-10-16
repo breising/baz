@@ -5,9 +5,13 @@ const bodyParser = require('body-parser')
 var session = require('express-session');
 var bcrypt = require('bcrypt');
 
-module.exports = function(app) {
+// Use below for testing JWT
+var jwt = require('jsonwebtoken');
+var config = require('../config');
 
-  
+
+
+module.exports = function(app) {
 
   var PGUSER = 'postgres'
   var PGDATABASE = 'baz'
@@ -42,7 +46,7 @@ module.exports = function(app) {
     } else {
       // user is already logged in...so log them OUT
       req.session.destroy(function(err) {
-         console.log("Session NOT ended" + err);
+         console.log("Session ended" + err);
       })
       return res.redirect("/login");
       //return res.redirect("main", message="Hello" + " " + req.session.user)
@@ -97,12 +101,19 @@ module.exports = function(app) {
             // IF NOT admin, then do the normal bcrypt check
             // check value of hashed password
             bcrypt.compare(password, hashed, function(err, result) {
-                if(result){
+                if(result){ 
+                  // if there is a result it means they match
                   // create session
                   req.session.patient = "12567";
                   req.session.user = email;
                   var message = "Login success"
                   var login = "Logout"
+
+                  // create a token
+                  // var token = jwt.sign({ id: user._id }, config.secret, {
+                  //   expiresIn: 86400 // expires in 24 hours
+                  // });
+                  
                   return res.redirect("/youserDash?message=" + message + "&login=" + login);
                 } else {
                   // No soup for you !

@@ -37,26 +37,7 @@ module.exports = function(app) {
   var message = ""
 
   app.get('/template-build', function (req, res) {
-    // Don't need the time data for the TEMPLATE MAKER
-    // var monthsArray = ["Jan","Feb","Mar","April","May","June","July","Aug","Sept","Oct","Nov","Dec"];
 
-    // var today = new Date();
-
-    // var today = new Date();
-
-    // var day = today.getDate();
-
-    // var month = today.getMonth(); //January is 0!
-    
-    // month = monthsArray[month];//convert the month to string abbreviation
-
-    // var year = today.getFullYear();
-
-    // if(day<10) {
-    //   day = '0'+day
-    // } 
-
-    // console.log(year + " " + month + " " + day);
 
     pool.connect(function (err, client, done) {
       if (err) console.log(err)
@@ -81,11 +62,22 @@ module.exports = function(app) {
               if(result) {
                 //call function to pass info into it
                 //console.log(result.rows[0]);
-                var blocks = result.rows;
-          
-
-                return res.render('template-build.pug', {chairs: chairs, message: message, login: "Logout", blocks:blocks})
+                var blocks = result.rows; 
               } // if result
+
+              dbClient.query('SELECT * from template', function (err, result) {
+                if (err) {
+                  console.log("Error getting data from table template." + err)
+                } // if(error)
+                if(result) {
+                  //call function to pass info into it
+                  //console.log("The templates are:" + result.rows[1].id);
+                  var templates = result.rows;
+                  //var id = result.rows[0].id;
+
+                  return res.render('template-build.pug', {chairs: chairs, message: message, login: "Logout", blocks:blocks, templates:templates})
+                } // if result
+              }) //dbClient
           }) //dbClient
         }  // if result
       }) // dbClient
